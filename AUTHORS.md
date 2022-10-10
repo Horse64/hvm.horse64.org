@@ -1,6 +1,6 @@
 # HVM Authors
 
-This is the HVM team which created the Horse64 bytecode VM,
+This is the HVM team which created this project,
 in alphabetical order:
 
 - Ellie (`@ell1e` on GitHub.com/Codeberg.org, email: `el AT horse64 DOT org`)
