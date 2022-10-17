@@ -13,7 +13,8 @@ body:
     id: description
     attributes:
       label: What to add?
-      description: What feature or enhancement do you want added in, how should it work?
+      description: |
+        What feature or enhancement should be added, how should it work?
       placeholder: Detailed description...
     validations:
       required: true
