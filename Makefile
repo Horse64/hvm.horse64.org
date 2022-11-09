@@ -26,11 +26,14 @@ STRIPTOOL:=strip
 endif
 CFLAGS+= -I$(SPEW3D_PATH)/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/
 
-default: check-submodules $(ALL_OBJECTS)
+default: check-submodules reassemble-spew3d $(ALL_OBJECTS)
 	$(CC) $(CFLAGS) -o ./"$(BINNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 
 %.o: %.c $.h
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+reassemble-spew3d:
+	cd $(SPEW3D_PATH) && make amalgamate
 
 check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
