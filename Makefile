@@ -4,7 +4,7 @@ SPEW3D_PATH:=./vendor/Spew3D/
 
 BINNAME:=HVM
 TEST_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/test_*.c))
-ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.c
+ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
 TEST_BINARIES:=$(patsubst %.o, %.bin, $(TEST_OBJECTS))
 PROGRAM_OBJECTS:=$(filter-out $(TEST_OBJECTS),$(ALL_OBJECTS))
 PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
@@ -66,4 +66,6 @@ endif
 	cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"
 
 
+clean:
+	rm -f $(ALL_OBJECTS)
 

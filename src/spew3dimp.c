@@ -25,14 +25,7 @@ Alternatively, at your option, this file is offered under the Apache 2
 license, see accompanied LICENSE.md.
 */
 
-#if defined(SPEW3D_IMPLEMENTATION) && !defined(IN_HVM_SPEW3D_OBJ)
-#error "Spurious invalid SPEW3D_IMPLEMENTATION define."
-#endif
-#ifndef HVM_USE_SDL
-#define SPEW3D_OPTION_DISABLE_SDL
-#endif
-#include "spew3d.h"
-
-//#define DEBUG_STARTUP
-//#define DEBUG_VFS
+#define SPEW3D_IMPLEMENTATION
+#define IN_HVM_SPEW3D_OBJ
+#include "compileconfig.h"
 
