@@ -39,7 +39,7 @@ check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
 	@echo "Submodules appear to exist."
 	@if [ ! -e "$(SDL_PATH)/build/.libs/libhvmSDL.a" ]; then echo "Warning, dependencies appear to be not build. Automatically running build-deps target."; make build-deps; fi
-	@echo "Submodules appear to have been built some time. (Run build-deps to build them again.)"
+	@echo "Submodules appear to have been built some time. (Run 'make build-deps' to build them again.)"
 
 build-deps: build-sdl amalgamate-spew3d
 
