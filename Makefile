@@ -3,21 +3,31 @@ SDL_PATH:=./vendor/SDL/
 SPEW3D_PATH:=./vendor/Spew3D/
 
 BINNAME:=HVM
+ifneq (,$(findstring lhvmSDL,$(CFLAGS)))
+BINHEADLESSNAME:=
+GRAPHICAL_BUILD:=yes
+else
+BINHEADLESSNAME:=-headless
+GRAPHICAL_BUILD:=no
+endif
 TEST_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/test_*.c))
 ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
 TEST_BINARIES:=$(patsubst %.o, %.bin, $(TEST_OBJECTS))
 PROGRAM_OBJECTS:=$(filter-out $(TEST_OBJECTS),$(ALL_OBJECTS))
 PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 
-ifneq ($(RELEASE_BUILD),true)
+CFLAGS+=-fPIC
+ifneq ($(RELEASE_BUILD),yes)
 CFLAGS_OPTIMIZATION:=-O1 -g -msse2 -msse3 -march=core2 -fno-omit-frame-pointer
 else
 CFLAGS_OPTIMIZATION:=-Ofast -s -ftree-vectorize -flto -msse2 -msse3 -march=core2 -fno-finite-math-only -fomit-frame-pointer -DNDEBUG
 endif
-ifeq ($(WIN_BUILD),true)
+ifeq ($(WIN_BUILD),yes)
 BINEXT:=.exe
+LIBEXT:=.dll
 else
 BINEXT:=.bin
+LIBEXT:=.so
 CFLAGS+= -pthread
 PLATFORM:=linux
 HOSTOPTION:=
@@ -25,9 +35,19 @@ LDFLAGS+= -lm -ldl
 STRIPTOOL:=strip
 endif
 CFLAGS+= -I$(SPEW3D_PATH)/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/
+ifeq ($(GRAPHICAL_BUILD),yes)
+CFLAGS+= -L$(SDL_PATH)/build/.libs/
+endif
 
-default: check-submodules reassemble-spew3d $(ALL_OBJECTS)
-	$(CC) $(CFLAGS) -o ./"$(BINNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
+build-both: clean build-headless clean build-graphical	
+
+build-headless: check-submodules
+	$(MAKE) build-default
+build-graphical: check-submodules-graphical
+	CFLAGS='$(CFLAGS) -lhvmSDL' $(MAKE) build-default
+build-default: reassemble-spew3d $(ALL_OBJECTS)
+	$(CC) $(CFLAGS) -o ./"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -shared -o ./"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)	
 
 %.o: %.c $.h
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -38,10 +58,16 @@ reassemble-spew3d:
 check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
 	@echo "Submodules appear to exist."
-	@if [ ! -e "$(SDL_PATH)/build/.libs/libhvmSDL.a" ]; then echo "Warning, dependencies appear to be not build. Automatically running build-deps target."; make build-deps; fi
+	@if [ ! -e "$(SPEW3D_PATH)/include/spew3d.h" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps' to build them again.)"
 
-build-deps: build-sdl amalgamate-spew3d
+check-submodules-graphical: check-submodules
+	@if [ ! -e "$(SDL_PATH)/build/.libs/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps-graphical; fi
+	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
+
+build-deps: amalgamate-spew3d
+
+build-deps-graphical: build-sdl amalgamate-spew3d
 
 amalgamate-spew3d:
 	cd "$(SPEW3D_PATH)" && git submodule update --init && make
@@ -68,4 +94,5 @@ endif
 
 clean:
 	rm -f $(ALL_OBJECTS)
-
+	rm -f $(BINNAME).bin $(BINNAME).exe $(BINNAME).so $(BINNAME).dll
+	rm -f $(BINNAME)-headless.bin $(BINNAME)-headless.exe $(BINNAME)-headless.so $(BINNAME)-headless.dll
