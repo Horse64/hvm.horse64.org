@@ -1,4 +1,7 @@
-HVM.bin
+HVM*.bin
+*.exe
 *~
+*.so
+*.dll
 *.o
 /horse_modules/
