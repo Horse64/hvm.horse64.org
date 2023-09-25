@@ -6,9 +6,13 @@ This file lists credits for software possibly included in HVM in its
 runtime form, and therefore any programs made with HVM or Horse64.
 Any such software however could included strongly altered, or not at all.
 
-Also, please see Spew3D license files in addition. If you have a HVM
-repository clone in a folder, these are in `vendor/Spew3D/LICENSE.md`
-and `vendor/Spew3D/3RDPARTYLICENSES.md` after building.)
+Also, please see Spew3D and commonmark license files in addition.
+
+To see these easily, use `horp license .` in a HVM repository folder
+for a more complete listing. Using `horp license .` in your own
+Horse64 project folder should also list these indirectly. Please
+keep in mind all of this listing might be outdated or wrong, no
+guarantees of any kind.
 
 
 md5.c
@@ -92,7 +96,8 @@ Sponsored in part by the Defense Advanced Research Projects
 Agency (DARPA) and Air Force Research Laboratory, Air Force
 Materiel Command, USAF, under agreement number F39502-99-1-0512.
 
-
+NetBSD's erand48
+----------------
 
 Copyright (c) 2000 The NetBSD Foundation, Inc.
 All rights reserved.
@@ -123,8 +128,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 
-gdtoa: Converting between IEEE floating point numbers and ASCII
----------------------------------------------------------------
+MinGW-w64 CRT: gdtoa
+--------------------
 
 The author of this software is David M. Gay.
 

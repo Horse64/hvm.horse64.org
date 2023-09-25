@@ -4,4 +4,5 @@ HVM*.bin
 *.so
 *.dll
 *.o
+/built_deps/
 /horse_modules/

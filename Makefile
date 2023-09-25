@@ -1,14 +1,18 @@
 
 SDL_PATH:=./vendor/SDL/
 SPEW3D_PATH:=./vendor/Spew3D/
+COMMONMARK_PATH=./vendor/commonmark/
 
+ifeq ($(PLATFORM),)
+ifneq (,$(findstring mingw,$(CC)))
+PLATFORM:=windows
+endif
+endif
 BINNAME:=HVM
-ifneq (,$(findstring lhvmSDL,$(CFLAGS)))
+ifneq (,$(findstring lhvmSDL,$(CFLAGS_ADDEDINTERNAL)))
 BINHEADLESSNAME:=
-GRAPHICAL_BUILD:=yes
 else
 BINHEADLESSNAME:=-headless
-GRAPHICAL_BUILD:=no
 endif
 TEST_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/test_*.c))
 ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
@@ -22,7 +26,7 @@ CFLAGS_OPTIMIZATION:=-O1 -g -msse2 -msse3 -march=core2 -fno-omit-frame-pointer
 else
 CFLAGS_OPTIMIZATION:=-Ofast -s -ftree-vectorize -flto -msse2 -msse3 -march=core2 -fno-finite-math-only -fomit-frame-pointer -DNDEBUG
 endif
-ifeq ($(WIN_BUILD),yes)
+ifeq ($(PLATFORM),windows)
 BINEXT:=.exe
 LIBEXT:=.dll
 else
@@ -34,26 +38,20 @@ HOSTOPTION:=
 LDFLAGS+= -lm -ldl
 STRIPTOOL:=strip
 endif
-CFLAGS+= -I$(SPEW3D_PATH)/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/
-ifeq ($(GRAPHICAL_BUILD),yes)
-CFLAGS+= -L$(SDL_PATH)/build/.libs/
-endif
+CFLAGS+= -I./built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./built_deps/
 
 build-both: clean build-headless clean build-graphical	
 
 build-headless: check-submodules
 	$(MAKE) build-default
 build-graphical: check-submodules-graphical
-	CFLAGS='$(CFLAGS) -lhvmSDL' $(MAKE) build-default
-build-default: reassemble-spew3d $(ALL_OBJECTS)
-	$(CC) $(CFLAGS) -o ./"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
-	$(CC) $(CFLAGS) -shared -o ./"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)	
+	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -lhvmSDL" $(MAKE) build-default
+build-default: amalgamate-spew3d $(ALL_OBJECTS)
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)	
 
 %.o: %.c $.h
 	$(CC) $(CFLAGS) -c -o $@ $<
-
-reassemble-spew3d:
-	cd $(SPEW3D_PATH) && make amalgamate
 
 check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
@@ -65,18 +63,19 @@ check-submodules-graphical: check-submodules
 	@if [ ! -e "$(SDL_PATH)/build/.libs/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps-graphical; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
 
-build-deps: amalgamate-spew3d
+build-deps: amalgamate-spew3d build-commonmark
 
-build-deps-graphical: build-sdl amalgamate-spew3d
+build-deps-graphical: build-commonmark build-sdl amalgamate-spew3d
 
 amalgamate-spew3d:
-	cd "$(SPEW3D_PATH)" && git submodule update --init && make
+	cd "$(SPEW3D_PATH)" && git submodule update --init && make clean && make amalgamate
+	mkdir -p ./built_deps/include/
+	cp "$(SPEW3D_PATH)/include/spew3d.h" ./built_deps/include/
+
+build-windows-x64:
+	$(MAKE) CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-deps-graphical
 
 build-sdl:
-	rm -f "$(SDL_PATH)/Makefile"
-	rm -rf "$(SDL_PATH)/gen"
-	rm -rf "$(SDL_PATH)/build/*"
-	cp "$(SDL_PATH)/include/SDL_config.h" "$(SDL_PATH)/include/SDL_config.h.OLD"
 ifeq ($(PLATFORM),linux)
 	cd "$(SDL_PATH)" && bash ./autogen.sh && ./configure --disable-video-opengles1 --enable-assertions=release --disable-video-vulkan --enable-sse3 --enable-ssemath --disable-oss --disable-jack --enable-static --disable-shared --enable-ssemath --disable-libsamplerate
 else
@@ -87,12 +86,38 @@ else
 	exit 1
 endif
 endif
-	cd "$(SDL_PATH)" && make clean && make
-	cp "$(SDL_PATH)/build/.libs/libSDL2.a" "$(SDL_PATH)/build/.libs/libhvmSDL.a"
+	cd "$(SDL_PATH)" && make
+	mkdir -p ./built_deps/
+	cp "$(SDL_PATH)/build/.libs/libSDL2.a" "built_deps/libhvmSDL.a"
 	cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"
 
+build-commonmark:
+	mkdir -p ./built_deps/
+ifeq ($(PLATFORM),windows)
+	mkdir -p "$(COMMONMARK_PATH)"/build
+	cd "$(COMMONMARK_PATH)"/build && cmake CC="$(CC) CXX="$(CXX) CMAKE_SYSTEM_NAME=Windows CMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER CMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY CMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY ..
+	cd "$(COMMONMARK_PATH)"/build && make CC="$(CC) CXX="$(CXX)
+	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./built_deps/libhvmcmark.a"
+else
+	mkdir -p "$(COMMONMARK_PATH)"/build
+	cd "$(COMMONMARK_PATH)"/build && cmake
+	cd "$(COMMONMARK_PATH)/build/" && make
+	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./built_deps/libhvmcmark.a"
+endif
 
 clean:
 	rm -f $(ALL_OBJECTS)
 	rm -f $(BINNAME).bin $(BINNAME).exe $(BINNAME).so $(BINNAME).dll
 	rm -f $(BINNAME)-headless.bin $(BINNAME)-headless.exe $(BINNAME)-headless.so $(BINNAME)-headless.dll
+
+veryclean: clean
+	rm -rf ./built_deps/
+	cd "$(COMMONMARK_PATH)" && rm -rf ./build && rm -rf ./build-mingw/
+	cd "$(COMMONMARK_PATH)" && rm -f ./CMakeCache.txt
+	cd "$(SDL_PATH)" && rm -rf "$(SDL_PATH)/build/"
+	rm -f "$(SDL_PATH)/Makefile"
+	rm -rf "$(SDL_PATH)/gen"
+	rm -rf "$(SDL_PATH)/build/*"
+	cp "$(SDL_PATH)/include/SDL_config.h" "$(SDL_PATH)/include/SDL_config.h.OLD"
+	cd "$(SPEW3D_PATH)" && make clean
+
