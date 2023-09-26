@@ -38,6 +38,7 @@ HOSTOPTION:=
 LDFLAGS+= -lm -ldl
 STRIPTOOL:=strip
 endif
+LDFLAGS+= -lhvmcmark
 CFLAGS+= -I./built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./built_deps/
 
 build-both: clean build-headless clean build-graphical	
@@ -50,8 +51,8 @@ build-default: amalgamate-spew3d $(ALL_OBJECTS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)	
 
-%.o: %.c $.h
-	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: %.c %.h
+	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
 
 check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
@@ -73,7 +74,9 @@ amalgamate-spew3d:
 	cp "$(SPEW3D_PATH)/include/spew3d.h" ./built_deps/include/
 
 build-windows-x64:
-	$(MAKE) CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-deps-graphical
+	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-deps-graphical
+	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-default
+	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-graphical
 
 build-sdl:
 ifeq ($(PLATFORM),linux)
@@ -87,7 +90,9 @@ else
 endif
 endif
 	cd "$(SDL_PATH)" && make
-	mkdir -p ./built_deps/
+	mkdir -p ./built_deps/include
+	rm -rf ./built_deps/include/SDL2/
+	cp -R "$(SDL_PATH)/include/" ./built_deps/include/SDL2/
 	cp "$(SDL_PATH)/build/.libs/libSDL2.a" "built_deps/libhvmSDL.a"
 	cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"
 
@@ -100,7 +105,7 @@ ifeq ($(PLATFORM),windows)
 	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./built_deps/libhvmcmark.a"
 else
 	mkdir -p "$(COMMONMARK_PATH)"/build
-	cd "$(COMMONMARK_PATH)"/build && cmake
+	cd "$(COMMONMARK_PATH)"/build && cmake ..
 	cd "$(COMMONMARK_PATH)/build/" && make
 	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./built_deps/libhvmcmark.a"
 endif
