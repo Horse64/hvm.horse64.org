@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2022, ellie/@ell1e & HVM Team (see AUTHORS.md).
+/* Copyright (c) 2020-2023, ellie/@ell1e & HVM Team (see AUTHORS.md).
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@ license, see accompanied LICENSE.md.
 */
 
 #define SPEW3D_IMPLEMENTATION
+#define SPEW3DWEB_IMPLEMENTATION
 #define IN_HVM_SPEW3D_OBJ
 #include "compileconfig.h"
 
