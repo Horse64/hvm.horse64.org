@@ -37,7 +37,7 @@ RUN echo "#!/bin/bash\n\
     cp ./output/HVM.bin ../volume-output/HVM.Linux-x64-glib.bin\n\
     cp ./output/HVM-headless.bin ../volume-output/HVM-headless.Linux-x64-glib.bin\n\
     cp ./output/HVM.so ../volume-output/HVM.Linux-x64-glib.so\n\
-    cp ./output/HVM-headless.so ../volumes-output/HVM-headless.Linux-x64-glib.so\n\
+    cp ./output/HVM-headless.so ../volume-output/HVM-headless.Linux-x64-glib.so\n\
     echo 'Done!'" > /home/hvm.horse64.org/docker-build.sh
 VOLUME /home/hvm.horse64.org/build/
 
