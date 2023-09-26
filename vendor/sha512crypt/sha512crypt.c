@@ -1,8 +1,12 @@
 /* SHA512-based Unix crypt implementation.
    Released into the Public Domain by Ulrich Drepper <drepper@redhat.com>.  */
-#define __USE_MINGW_ANSI_STDIO 1  // Line added in by @ell1e for HVM
+#define __USE_MINGW_ANSI_STDIO 1  // Line added in by @ell1e for HVM.
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#include <malloc.h>
+#else  // 3 lines up to including here added in by @ell1e for HVM.
 #include <alloca.h>
 #include <endian.h>
+#endif  // Line added in by @ell1e for HVM.
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
