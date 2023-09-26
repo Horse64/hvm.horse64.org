@@ -34,7 +34,6 @@ license, see accompanied LICENSE.md.
 
 #include "multimutex.h"
 
-
 typedef struct mmstateinfo {
     void **waiter_list;
     uint64_t waiter_list_alloc, waiter_list_inuse;
