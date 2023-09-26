@@ -9,7 +9,7 @@ PLATFORM:=windows
 endif
 endif
 BINNAME:=HVM
-ifneq (,$(findstring lhvmSDL,$(CFLAGS_ADDEDINTERNAL)))
+ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
 BINHEADLESSNAME:=
 else
 BINHEADLESSNAME:=-headless
@@ -44,33 +44,38 @@ endif
 LDFLAGS+= -Wl,-Bstatic -lhvmcmark -Wl,-Bdynamic
 CFLAGS+= -I./output/built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
 
-build-both: clean build-headless clean build-graphical	
+build-both:
+	@echo "--- Compiler used: (start) ---"
+	@$(CC) --version
+	@echo "--- Compiler used (end) ---"
+	$(MAKE) clean build-headless
+	$(MAKE) clean build-graphical
 
 build-headless: forbid-winpthread check-submodules
 	$(MAKE) build-default
 build-graphical: forbid-winpthread check-submodules-graphical
-	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
+	LDFLAGS_ADDEDINTERNAL="$(LDFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
 build-default: amalgamate-spew3d $(ALL_OBJECTS)
 	mkdir -p output
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
-	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS) $(LDFLAGS_ADDEDINTERNAL)
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
 
 forbid-winpthread:
 ifeq ($(PLATFORM),windows)
-	if [ "x$(POSIX_THREADS)" = "xposix threads" ]; then echo "ERROR: POSIX THREADS MINGW NOT SUPPORTED."; exit 1; fi
+	@if [ "x$(POSIX_THREADS)" = "xposix threads" ]; then echo "ERROR: POSIX THREADS MINGW NOT SUPPORTED."; exit 1; fi
 endif
 
 check-submodules:
 	@if [ ! -e "$(SDL_PATH)/README.md" ]; then echo ""; echo -e '\033[0;31m$$(SDL_PATH)/README.md missing. Did you download the submodules?\033[0m'; echo "Try this:"; echo ""; echo "    git submodule init && git submodule update"; echo ""; exit 1; fi
 	@echo "Submodules appear to exist."
-	@if [ ! -e "$(SPEW3D_PATH)/include/spew3d.h" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps; fi
+	@if [ ! -e "output/built_deps/include/spew3d.h" ]; then echo "Warning, headless dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps' to build them again.)"
 
 check-submodules-graphical: check-submodules
-	@if [ ! -e "$(SDL_PATH)/build/.libs/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps target."; $(MAKE) build-deps-graphical; fi
+	@if [ ! -e "output/built_deps/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps-graphical target."; $(MAKE) build-deps-graphical; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
 
 build-deps: amalgamate-spew3d build-commonmark
@@ -85,8 +90,7 @@ amalgamate-spew3d:
 build-windows-x64:
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" forbid-winpthread
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-deps-graphical
-	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-default
-	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-graphical
+	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-both
 
 build-sdl:
 ifeq ($(PLATFORM),linux)
@@ -95,7 +99,7 @@ else
 ifeq ($(PLATFORM),windows)
 	cd "$(SDL_PATH)" && bash ./autogen.sh && ./configure $(HOSTOPTION) --disable-wasapi --enable-assertions=release --enable-sse --enable-sse2 --enable-sse3 --enable-static --disable-shared --disable-pthreads --enable-threads --enable-ssemath --disable-video-opengl --disable-video-opengles --disable-video-vulkan --enable-render-d3d --disable-libsamplerate
 else
-	echo "ERROR: Unsupported platform for SDL build."
+	@echo "ERROR: Unsupported platform for SDL build."
 	exit 1
 endif
 endif
@@ -122,8 +126,10 @@ endif
 
 clean:
 	rm -f $(ALL_OBJECTS)
-	rm -f $(BINNAME).bin $(BINNAME).exe $(BINNAME).so $(BINNAME).dll
-	rm -f $(BINNAME)-headless.bin $(BINNAME)-headless.exe $(BINNAME)-headless.so $(BINNAME)-headless.dll
+	rm -f output/$(BINNAME).bin output/$(BINNAME).exe
+	rm -f output/$(BINNAME).so output/$(BINNAME).dll
+	rm -f output/$(BINNAME)-headless.bin output/$(BINNAME)-headless.exe
+	rm -f output/$(BINNAME)-headless.so output/$(BINNAME)-headless.dll
 
 veryclean: clean
 	rm -rf ./output/built_deps/
