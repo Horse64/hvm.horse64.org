@@ -1,0 +1,27 @@
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update --fix-missing
+RUN apt -qq -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip
+RUN python3 -m pip install -U pip
+RUN apt update && apt install -y ca-certificates
+
+RUN mkdir -p /home && mkdir -p /tmp/
+ADD . /home/hvm.horse64.org/
+
+RUN echo "#!/bin/bash\n\
+    git submodule init --update\n\
+    make build-windows-x64\n\
+    cp ./output/*.exe ../volume-output/\n\
+    cp ./output/*.dll ../volume-output/\n\
+    make veryclean\n\
+    make\n\
+    cp ./output/*.bin ../volume-output/\n\
+    cp ./output/*.so ../volume-output/\n\
+    echo 'Done!'" > /home/hvm.horse64.org/docker-build.sh
+VOLUME /home/hvm.horse64.org/build/
+
+WORKDIR /home/hvm.horse64.org/
+CMD [ "bash", "/docker-build.sh" ]
+

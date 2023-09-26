@@ -1,0 +1,12 @@
+
+version: '2'
+
+services:
+  build-x64:
+    build:
+      context: ./
+      dockerfile: Dockerfile.build-x64
+    tty: true
+    volumes:
+    - ./output/:/home/volume-output/:rw
+

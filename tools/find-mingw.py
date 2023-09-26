@@ -1,4 +1,29 @@
 #!/usr/bin/python3
+# Copyright (c) 2020-2023, ellie/@ell1e & HVM Team (see AUTHORS.md).
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Alternatively, at your option, this file is offered under the Apache 2
+# license, see accompanied LICENSE.md.
 
 import os
 import platform
@@ -51,11 +76,13 @@ def main():
                 continue
             tool_path = None
             if ("w64" in f and "-gcc" in f and "mingw" in f and\
-                    tool == "gcc" and "c++" not in f):
+                    tool == "gcc" and "c++" not in f) and \
+                    not "posix" in f:
                 tool_path = os.path.join(folder, f)
             if ("w64" in f and (("-gcc" in f and "c++" in f) or
                     "-g++" in f) and "mingw" in f and\
-                    tool == "g++"):
+                    tool == "g++") and \
+                    not "posix" in f:
                 tool_path = os.path.join(folder, f)
             if tool_path != None and (
                     "x64" in f or "x86-64" in f or
