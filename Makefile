@@ -59,7 +59,7 @@ build-default: amalgamate-spew3d $(ALL_OBJECTS)
 
 forbid-winpthread:
 ifeq ($(PLATFORM),windows)
-	@if [ "x$(POSIX_THREADS)" == "xposix threads" ]; then echo "ERROR: POSIX THREADS MINGW NOT SUPPORTED."; exit 1; fi
+	if [ "x$(POSIX_THREADS)" = "xposix threads" ]; then echo "ERROR: POSIX THREADS MINGW NOT SUPPORTED."; exit 1; fi
 endif
 
 check-submodules:
@@ -92,7 +92,7 @@ ifeq ($(PLATFORM),linux)
 	cd "$(SDL_PATH)" && bash ./autogen.sh && ./configure --disable-video-opengles1 --enable-assertions=release --disable-video-vulkan --enable-sse3 --enable-ssemath --disable-oss --disable-jack --enable-static --disable-shared --enable-ssemath --disable-libsamplerate
 else
 ifeq ($(PLATFORM),windows)
-	cd "$(SDL_PATH)" && ./configure $(HOSTOPTION) --disable-wasapi --enable-assertions=release --enable-sse --enable-sse2 --enable-sse3 --enable-static --disable-shared --disable-pthreads --enable-threads --enable-ssemath --disable-video-opengl --disable-video-opengles --disable-video-vulkan --enable-render-d3d --disable-libsamplerate
+	cd "$(SDL_PATH)" && bash ./autogen.sh && ./configure $(HOSTOPTION) --disable-wasapi --enable-assertions=release --enable-sse --enable-sse2 --enable-sse3 --enable-static --disable-shared --disable-pthreads --enable-threads --enable-ssemath --disable-video-opengl --disable-video-opengles --disable-video-vulkan --enable-render-d3d --disable-libsamplerate
 else
 	echo "ERROR: Unsupported platform for SDL build."
 	exit 1

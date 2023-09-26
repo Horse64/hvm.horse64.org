@@ -3,25 +3,35 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update --fix-missing
-RUN apt -qq -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip
+RUN apt -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip
+RUN apt -y install libwayland-egl-backend-dev tzdata libwayland-cursor0 wayland-scanner++ waylandpp-dev libwayland-cursor0 wayland-scanner++ mlocate
+RUN python3 -m pip install -U wheel requests Cython pywildcard
 RUN python3 -m pip install -U pip
 RUN apt update && apt install -y ca-certificates
+RUN updatedb
 
 RUN mkdir -p /home && mkdir -p /tmp/
 ADD . /home/hvm.horse64.org/
 
 RUN echo "#!/bin/bash\n\
-    git submodule init --update\n\
-    make build-windows-x64\n\
+    git submodule foreach --recursive git reset --hard || {\n\
+        echo 'Failed to reset submodules'; exit 1;\n\
+    }\n\
+    git submodule foreach --recursive git clean -xdf || {\n\
+        echo 'Failed to reset submodules'; exit 1;\n\
+    }\n\
+    git submodule update --init || { echo 'Failed submodule init.'; exit 1; }\n\
+    make veryclean\n\
+    make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
     cp ./output/*.exe ../volume-output/\n\
     cp ./output/*.dll ../volume-output/\n\
     make veryclean\n\
-    make\n\
+    make || { echo 'Failed Linux build.'; exit 1; }\n\
     cp ./output/*.bin ../volume-output/\n\
     cp ./output/*.so ../volume-output/\n\
     echo 'Done!'" > /home/hvm.horse64.org/docker-build.sh
 VOLUME /home/hvm.horse64.org/build/
 
 WORKDIR /home/hvm.horse64.org/
-CMD [ "bash", "/docker-build.sh" ]
+CMD [ "bash", "/home/hvm.horse64.org/docker-build.sh" ]
 
