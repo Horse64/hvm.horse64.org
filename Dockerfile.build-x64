@@ -23,7 +23,7 @@ RUN echo "#!/bin/bash\n\
     cp ./output/HVM.exe ../volume-output/HVM.Windows-x64.exe\n\
     cp ./output/HVM-headless.exe ../volume-output/HVM-headless.Windows-x64.exe\n\
     cp ./output/HVM.dll ../volume-output/HVM.Windows-x64.dll\n\
-    cp ./output/HVM-headless.dll ./volume-output/HVM-headless.Windows-x64.exe\n\
+    cp ./output/HVM-headless.dll ./volume-output/HVM-headless.Windows-x64.dll\n\
     echo ''\n\
     echo 'Cleaning up...'\n\
     echo '=============='\n\
