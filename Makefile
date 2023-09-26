@@ -44,12 +44,15 @@ endif
 LDFLAGS+= -Wl,-Bstatic -lhvmcmark -Wl,-Bdynamic
 CFLAGS+= -I./output/built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
 
+.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d build-windows-x64 build-sdl build-commonmark clean objectclean veryclean depsclean
+
 build-both:
 	@echo "--- Compiler used: (start) ---"
 	@$(CC) --version
 	@echo "--- Compiler used (end) ---"
-	$(MAKE) clean build-headless
-	$(MAKE) clean build-graphical
+	$(MAKE) clean
+	$(MAKE) objectclean build-headless
+	$(MAKE) objectclean build-graphical
 
 build-headless: forbid-winpthread check-submodules
 	$(MAKE) build-default
@@ -124,18 +127,22 @@ else
 	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./output/built_deps/libhvmcmark.a"
 endif
 
-clean:
+objectclean:
 	rm -f $(ALL_OBJECTS)
-	rm -f output/$(BINNAME).bin output/$(BINNAME).exe
-	rm -f output/$(BINNAME).so output/$(BINNAME).dll
-	rm -f output/$(BINNAME)-headless.bin output/$(BINNAME)-headless.exe
-	rm -f output/$(BINNAME)-headless.so output/$(BINNAME)-headless.dll
 
-veryclean: clean
+clean: objectclean
+	rm -f output/$(BINNAME)-$(BINHEADLESSNAME).$(BINEXT)
+	rm -rf output/$(BINNAME)-$(BINHEADLESSNAME).$(LIBEXT)
+
+veryclean: depsclean
 	rm -rf ./output/built_deps/
+	rm -f ./output/*.bin ./output/*.dll ./output/*.exe ./output/*.so
+
+depsclean:
 	cd "$(COMMONMARK_PATH)" && rm -rf ./build && rm -rf ./build-mingw/
-	cd "$(COMMONMARK_PATH)" && rm -f ./CMakeCache.txt
+	cd "$(COMMONMARK_PATH)" && rm -f ./CMakeCache.txt && rm -rf ./CMakeFiles/
 	cd "$(SDL_PATH)" && rm -rf "$(SDL_PATH)/build/"
+	cd "$(SDL_PATH)" && bash -c "make clean || echo 'Clean failed but who cares!'"
 	rm -f "$(SDL_PATH)/Makefile"
 	rm -rf "$(SDL_PATH)/gen"
 	rm -rf "$(SDL_PATH)/build/*"

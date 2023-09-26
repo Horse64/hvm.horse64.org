@@ -14,13 +14,6 @@ RUN mkdir -p /home && mkdir -p /tmp/
 ADD . /home/hvm.horse64.org/
 
 RUN echo "#!/bin/bash\n\
-    git submodule foreach --recursive git reset --hard || {\n\
-        echo 'Failed to reset submodules'; exit 1;\n\
-    }\n\
-    git submodule foreach --recursive git clean -xdf || {\n\
-        echo 'Failed to reset submodules'; exit 1;\n\
-    }\n\
-    git submodule update --init || { echo 'Failed submodule init.'; exit 1; }\n\
     make veryclean\n\
     echo ''\n\
     echo 'Starting Windows x64 builds...'\n\
@@ -34,7 +27,7 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Cleaning up...'\n\
     echo '=============='\n\
-    make veryclean\n\
+    make depsclean\n\
     echo ''\n\
     echo 'Starting Linux x64 build...'\n\
     echo '==========================='\n\
