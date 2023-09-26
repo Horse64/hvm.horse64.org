@@ -51,8 +51,9 @@ build-headless: forbid-winpthread check-submodules
 build-graphical: forbid-winpthread check-submodules-graphical
 	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
 build-default: amalgamate-spew3d $(ALL_OBJECTS)
-	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
-	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)	
+	mkdir -p output
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS)
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<

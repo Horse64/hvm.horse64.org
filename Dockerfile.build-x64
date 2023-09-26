@@ -26,6 +26,7 @@ RUN echo "#!/bin/bash\n\
     cp ./output/*.exe ../volume-output/\n\
     cp ./output/*.dll ../volume-output/\n\
     make veryclean\n\
+    make build-deps || { echo 'Failed to rebuild deps.'; exit 1; }\n\
     make || { echo 'Failed Linux build.'; exit 1; }\n\
     cp ./output/*.bin ../volume-output/\n\
     cp ./output/*.so ../volume-output/\n\
