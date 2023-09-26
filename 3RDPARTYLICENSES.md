@@ -18,6 +18,7 @@ guarantees of any kind.
 md5.c
 -----
 
+```
 Alexander Peslyak, better known as Solar Designer <solar at openwall.com>
 
 This software was written by Alexander Peslyak in 2001. No copyright is
@@ -31,11 +32,12 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted.
 
 There's ABSOLUTELY NO WARRANTY, express or implied.
-
+```
 
 MinGW-w64 CRT
 -------------
 
+```
 Copyright (c) 2009, 2010, 2011, 2012, 2013 by the mingw-w64 project
 
 This license has been certified as open source. It has also been designated
@@ -73,11 +75,12 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+```
 
 MinGW-w64 CRT: getopt, getopt_long, and getop_long_only
 -------------------------------------------------------
 
+```
 Copyright (c) 2002 Todd C. Miller <Todd.Miller@courtesan.com>
 
 Permission to use, copy, modify, and distribute this software for any
@@ -95,10 +98,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 Sponsored in part by the Defense Advanced Research Projects
 Agency (DARPA) and Air Force Research Laboratory, Air Force
 Materiel Command, USAF, under agreement number F39502-99-1-0512.
+```
 
 NetBSD's erand48
 ----------------
 
+```
 Copyright (c) 2000 The NetBSD Foundation, Inc.
 All rights reserved.
 
@@ -126,11 +131,12 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
-
+```
 
 MinGW-w64 CRT: gdtoa
 --------------------
 
+```
 The author of this software is David M. Gay.
 
 Copyright (C) 1997, 1998, 1999, 2000, 2001 by Lucent Technologies,
@@ -205,11 +211,12 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
 IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
-
+```
 
 MinGW-w64 CRT: Parts of the math library
 ----------------------------------------
 
+```
 Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
 
 Developed at SunSoft, a Sun Microsystems, Inc. business.
@@ -238,11 +245,12 @@ permission from the author and then add a license into the Cephes files
 in MinGW runtime. At least on follow-up it is marked that debian sees the
 version a-like BSD one. As MinGW.org (where those cephes parts are coming
 from) distributes them now over 6 years, it should be fine.
-
+```
 
 MinGW-w64 CRT: Headers and IDLs imported from Wine
 --------------------------------------------------
 
+```
 Some header and IDL files were imported from the Wine project. These files
 are prominent maked in source. Their copyright belongs to contributors and
 they are distributed under LGPL license.
@@ -258,11 +266,12 @@ This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
-
+```
 
 sha2.c
 ------
 
+```
 Copyright (C) 2000-2001, Aaron D. Gifford
 All rights reserved.
 Modified by Jelte Jansen to fit in ldns, and not clash with any
@@ -294,11 +303,12 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
-
+```
 
 OpenSSL
 -------
 
+```
 Copyright 2005-2021 The OpenSSL Project Authors. All Rights Reserved.
 
 Licensed under the Apache License 2.0 (the "License").  You may not use
@@ -484,4 +494,5 @@ LICENSE:
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+```
 
