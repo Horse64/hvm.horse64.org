@@ -66,6 +66,7 @@ def main():
         sys.exit(1)
         return
     search_folder = ["/usr/bin", "/usr/local/bin"]
+    candidates = []
     for folder in search_folder:
         try:
             files_list = sorted(os.listdir(folder))
@@ -88,21 +89,36 @@ def main():
                     "x64" in f or "x86-64" in f or
                     "x86_64" in f) and platform_name in ["x86",
                     "x64", "x86_64"]:
-                if do_print_host:
-                    result = f
-                    if result.endswith("-gcc"):
-                        print(result.rpartition("-gcc")[0])
-                    elif result.endswith("-gcc-c++"):
-                        print(result.rpartition("-gcc-c++")[0])
-                    elif result.endswith("-g++"):
-                        print(result.rpartition("-g++")[0])
-                    elif result.endswith("-cc"):
-                        print(result.rpartition("-cc")[0])
-                    else:
-                        continue
+                candidates.append((tool_path, f))
+    best_candidate = (candidates[0] if
+        len(candidates) > 0 else None)
+    for candidate in candidates:
+        if (candidate[1].endswith("-win32") and (
+                best_candidate is None or
+                not best_candidate[1].endswith("-win32") or
+                len(candidate[1]) < len(best_candidate[1]))):
+            best_candidate = candidate
+    if best_candidate:
+        if do_print_host:
+            result = best_candidate[1]
+            while True:
+                if result.endswith("-win32"):
+                    result = result.rpartition("-win32")[0]
+                elif result.endswith("-gcc"):
+                    result = result.rpartition("-gcc")[0]
+                elif result.endswith("-gcc-c++"):
+                    result = result.rpartition("-gcc-c++")[0]
+                elif result.endswith("-g++"):
+                    result = result.rpartition("-g++")[0]
+                elif result.endswith("-cc"):
+                    result = result.rpartition("-cc")[0]
                 else:
-                    print(tool_path)
-                sys.exit(0)
+                    break
+            print(result)
+            sys.exit(0)
+        else:
+            print(best_candidate[0])
+            sys.exit(0)
     print("No MinGW found, sorry.")
     sys.exit(1)
 
