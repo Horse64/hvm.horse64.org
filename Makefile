@@ -29,6 +29,7 @@ endif
 ifeq ($(PLATFORM),windows)
 BINEXT:=.exe
 LIBEXT:=.dll
+LDFLAGS+= -lole32
 else
 BINEXT:=.bin
 LIBEXT:=.so
