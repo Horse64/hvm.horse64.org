@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2022, ellie/@ell1e & HVM Team (see AUTHORS.md).
+/* Copyright (c) 2020-2023, ellie/@ell1e & HVM Team (see AUTHORS.md).
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -199,7 +199,7 @@ int WINAPI WinMain(
     char **argv = malloc(sizeof(*argv));
     if (!argv)
         return 1;
-    char *execfullpath = spew3d_fs_GetOwnExecutable();
+    char *execfullpath = spew3d_fs_GetOwnExecutablePath();
     char *execname = NULL;
     if (execfullpath) {
         char *execname = spew3d_fs_Basename(execfullpath);

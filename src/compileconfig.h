@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2022, ellie/@ell1e & HVM Team (see AUTHORS.md).
+/* Copyright (c) 2020-2023, ellie/@ell1e & HVM Team (see AUTHORS.md).
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,6 +32,8 @@ license, see accompanied LICENSE.md.
 #define SPEW3D_OPTION_DISABLE_SDL
 #endif
 #include "spew3d.h"
+
+#define ATTR_UNUSED __attribute__((unused))
 
 //#define DEBUG_STARTUP
 //#define DEBUG_VFS
