@@ -1,6 +1,6 @@
 [submodule "vendor/Spew3D"]
 	path = vendor/Spew3D
-	url = https://codeberg.org/ell1e/Spew3D
+	url = https://codeberg.org/Spew3D/Spew3D
     ignore = untracked
 [submodule "vendor/SDL"]
 	path = vendor/SDL
@@ -10,3 +10,6 @@
 	path = vendor/commonmark
 	url = https://github.com/commonmark/cmark
     ignore = untracked
+[submodule "vendor/Spew3D-Web"]
+	path = vendor/Spew3D-Web
+	url = https://codeberg.org/Spew3D/Spew3D-Web
