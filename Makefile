@@ -3,6 +3,7 @@ SDL_PATH:=./vendor/SDL/
 SPEW3D_PATH:=./vendor/Spew3D/
 SPEW3DWEB_PATH:=./vendor/Spew3D-Web/
 COMMONMARK_PATH=./vendor/commonmark/
+REPO_PATH:=$(shell pwd)
 
 ifeq ($(PLATFORM),)
 ifneq (,$(findstring mingw,$(CC)))
@@ -102,6 +103,7 @@ build-windows-x64:
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-both
 
 build-sdl:
+	cd "$(SDL_PATH)" && python3 "$(REPO_PATH)/tools/disable-sdl-dynamic-api.py"
 ifeq ($(PLATFORM),linux)
 	cd "$(SDL_PATH)" && bash ./autogen.sh && ./configure --disable-video-opengles1 --enable-assertions=release --disable-video-vulkan --enable-sse3 --enable-ssemath --disable-oss --disable-jack --enable-static --disable-shared --enable-ssemath --disable-libsamplerate
 else
@@ -147,7 +149,7 @@ veryclean: depsclean
 depsclean:
 	cd "$(COMMONMARK_PATH)" && rm -rf ./build && rm -rf ./build-mingw/
 	cd "$(COMMONMARK_PATH)" && rm -f ./CMakeCache.txt && rm -rf ./CMakeFiles/
-	cd "$(SDL_PATH)" && rm -rf "$(SDL_PATH)/build/"
+	cd "$(SDL_PATH)" && rm -rf "$(SDL_PATH)/build/" && git checkout src/dynapi/SDL_dynapi.h
 	cd "$(SDL_PATH)" && bash -c "make clean || echo 'Clean failed but who cares!'"
 	rm -f "$(SDL_PATH)/Makefile"
 	rm -rf "$(SDL_PATH)/gen"
