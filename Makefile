@@ -2,7 +2,6 @@
 SDL_PATH:=./vendor/SDL/
 SPEW3D_PATH:=./vendor/Spew3D/
 SPEW3DWEB_PATH:=./vendor/Spew3D-Web/
-COMMONMARK_PATH=./vendor/commonmark/
 REPO_PATH:=$(shell pwd)
 
 ifeq ($(PLATFORM),)
@@ -43,10 +42,10 @@ HOSTOPTION:=
 LDFLAGS+= -Wl,-Bdynamic -lm -ldl
 STRIPTOOL:=strip
 endif
-LDFLAGS+= -Wl,-Bstatic -lhvmcmark -Wl,-Bdynamic
+LDFLAGS+= -Wl,-Bstatic -Wl,-Bdynamic
 CFLAGS+= -I./output/built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
 
-.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3d-web build-windows-x64 build-sdl build-commonmark clean objectclean veryclean depsclean
+.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3d-web build-windows-x64 build-sdl clean objectclean veryclean depsclean
 
 build-both:
 	@echo "--- Compiler used: (start) ---"
@@ -83,9 +82,9 @@ check-submodules-graphical: check-submodules
 	@if [ ! -e "output/built_deps/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps-graphical target."; $(MAKE) build-deps-graphical; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
 
-build-deps: amalgamate-spew3d amalgamate-spew3d-web build-commonmark
+build-deps: amalgamate-spew3d amalgamate-spew3d-web
 
-build-deps-graphical: build-commonmark build-sdl amalgamate-spew3d amalgamate-spew3d-web
+build-deps-graphical: build-sdl amalgamate-spew3d amalgamate-spew3d-web
 
 amalgamate-spew3d:
 	cd "$(SPEW3D_PATH)" && git submodule update --init && make clean && make amalgamate
@@ -121,20 +120,6 @@ endif
 	cp "$(SDL_PATH)/build/.libs/libSDL2.a" "./output/built_deps/libhvmSDL.a"
 	cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"
 
-build-commonmark:
-	mkdir -p ./output/built_deps/
-ifeq ($(PLATFORM),windows)
-	mkdir -p "$(COMMONMARK_PATH)"/build
-	cd "$(COMMONMARK_PATH)"/build && cmake CC="$(CC) CXX="$(CXX) CMAKE_SYSTEM_NAME=Windows CMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER CMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY CMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY ..
-	cd "$(COMMONMARK_PATH)"/build && make CC="$(CC) CXX="$(CXX)
-	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./output/built_deps/libhvmcmark.a"
-else
-	mkdir -p "$(COMMONMARK_PATH)"/build
-	cd "$(COMMONMARK_PATH)"/build && cmake ..
-	cd "$(COMMONMARK_PATH)/build/" && make
-	cp "$(COMMONMARK_PATH)/build/src/libcmark.a" "./output/built_deps/libhvmcmark.a"
-endif
-
 objectclean:
 	rm -f $(ALL_OBJECTS)
 
@@ -147,8 +132,6 @@ veryclean: depsclean
 	rm -f ./output/*.bin ./output/*.dll ./output/*.exe ./output/*.so
 
 depsclean:
-	cd "$(COMMONMARK_PATH)" && rm -rf ./build && rm -rf ./build-mingw/
-	cd "$(COMMONMARK_PATH)" && rm -f ./CMakeCache.txt && rm -rf ./CMakeFiles/
 	cd "$(SDL_PATH)" && rm -rf "$(SDL_PATH)/build/" && git checkout src/dynapi/SDL_dynapi.h
 	cd "$(SDL_PATH)" && bash -c "make clean || echo 'Clean failed but who cares!'"
 	rm -f "$(SDL_PATH)/Makefile"

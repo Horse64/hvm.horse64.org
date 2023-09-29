@@ -6,10 +6,6 @@
 	path = vendor/SDL
 	url = https://github.com/libsdl-org/SDL
     ignore = dirty
-[submodule "vendor/commonmark"]
-	path = vendor/commonmark
-	url = https://github.com/commonmark/cmark
-    ignore = untracked
 [submodule "vendor/Spew3D-Web"]
 	path = vendor/Spew3D-Web
 	url = https://codeberg.org/Spew3D/Spew3D-Web
