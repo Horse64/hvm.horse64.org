@@ -1,11 +1,15 @@
-# HVM Licensing
+
+HVM Licensing
+=============
 
 *(Note: this document omits compiled-in 3rd party dependencies. Without
 guarantees of completeness or accuracy, `horp license .` run in
 this repository will attempt to output the licenses of dependencies,
 too.)*
 
-## License
+
+License
+-------
 
 Files outside of the `vendor` folder are, unless indicated
 otherwise, licensed under the following **BSD-2-Clause license**:
@@ -245,7 +249,8 @@ following **Apache 2 License**:
 ```
 
 
-## Contributions, Binaries
+Contributions, Binaries
+-----------------------
 
 Same rules apply as for [main repo contributions, including the DCO](
     https://codeberg.org/Horse64/core.horse64.org/src/branch/main/LICENSE.md#contributions).
