@@ -32,7 +32,7 @@ license, see accompanied LICENSE.md.
 #define SPEW3D_OPTION_DISABLE_SDL
 #endif
 #include "spew3d.h"
-#include "spew3d-web.h"
+#include "spew3dweb.h"
 
 #define ATTR_UNUSED __attribute__((unused))
 

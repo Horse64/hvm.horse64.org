@@ -45,7 +45,7 @@ endif
 LDFLAGS+= -Wl,-Bstatic -Wl,-Bdynamic
 CFLAGS+= -I./output/built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
 
-.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3d-web build-windows-x64 build-sdl clean objectclean veryclean depsclean
+.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3dweb build-windows-x64 build-sdl clean objectclean veryclean depsclean
 
 build-both:
 	@echo "--- Compiler used: (start) ---"
@@ -59,7 +59,7 @@ build-headless: forbid-winpthread check-submodules
 	$(MAKE) build-default
 build-graphical: forbid-winpthread check-submodules-graphical
 	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -DHVM_USE_SDL" LDFLAGS_ADDEDINTERNAL="$(LDFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
-build-default: amalgamate-spew3d amalgamate-spew3d-web $(ALL_OBJECTS)
+build-default: amalgamate-spew3d amalgamate-spew3dweb $(ALL_OBJECTS)
 	mkdir -p output
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS) $(LDFLAGS_ADDEDINTERNAL)
@@ -82,19 +82,19 @@ check-submodules-graphical: check-submodules
 	@if [ ! -e "output/built_deps/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps-graphical target."; $(MAKE) build-deps-graphical; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
 
-build-deps: amalgamate-spew3d amalgamate-spew3d-web
+build-deps: amalgamate-spew3d amalgamate-spew3dweb
 
-build-deps-graphical: build-sdl amalgamate-spew3d amalgamate-spew3d-web
+build-deps-graphical: build-sdl amalgamate-spew3d amalgamate-spew3dweb
 
 amalgamate-spew3d:
 	cd "$(SPEW3D_PATH)" && git submodule update --init && make clean && make amalgamate
 	mkdir -p ./output/built_deps/include/
 	cp "$(SPEW3D_PATH)/include/spew3d.h" ./output/built_deps/include/
 
-amalgamate-spew3d-web:
+amalgamate-spew3dweb:
 	cd "$(SPEW3DWEB_PATH)" && git submodule update --init && make clean && make amalgamate
 	mkdir -p ./output/built_deps/include/
-	cp "$(SPEW3DWEB_PATH)/include/spew3d-web.h" ./output/built_deps/include/
+	cp "$(SPEW3DWEB_PATH)/include/spew3dweb.h" ./output/built_deps/include/
 
 build-windows-x64:
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" forbid-winpthread
