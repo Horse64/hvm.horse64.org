@@ -9,3 +9,6 @@
 [submodule "vendor/Spew3D-Web"]
 	path = vendor/Spew3D-Web
 	url = https://codeberg.org/Spew3D/Spew3D-Web
+[submodule "vendor/Spew3D-Net"]
+	path = vendor/Spew3D-Net
+	url = https://codeberg.org/Spew3D/Spew3D-Net
