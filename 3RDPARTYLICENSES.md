@@ -6,7 +6,7 @@ This file lists credits for software possibly included in HVM in its
 runtime form, and therefore any programs made with HVM or Horse64.
 Any such software however could included strongly altered, or not at all.
 
-Also, please see Spew3D and commonmark license files in addition.
+Also, please see Spew3D license files in addition.
 
 To see these easily, use `horp license .` in a HVM repository folder
 for a more complete listing. Using `horp license .` in your own
@@ -33,6 +33,7 @@ modification, are permitted.
 
 There's ABSOLUTELY NO WARRANTY, express or implied.
 ```
+
 
 MinGW-w64 CRT
 -------------
@@ -77,6 +78,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
+
 MinGW-w64 CRT: getopt, getopt_long, and getop_long_only
 -------------------------------------------------------
 
@@ -99,6 +101,7 @@ Sponsored in part by the Defense Advanced Research Projects
 Agency (DARPA) and Air Force Research Laboratory, Air Force
 Materiel Command, USAF, under agreement number F39502-99-1-0512.
 ```
+
 
 NetBSD's erand48
 ----------------
@@ -132,6 +135,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ```
+
 
 MinGW-w64 CRT: gdtoa
 --------------------
@@ -213,6 +217,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
 ```
 
+
 MinGW-w64 CRT: Parts of the math library
 ----------------------------------------
 
@@ -247,6 +252,7 @@ version a-like BSD one. As MinGW.org (where those cephes parts are coming
 from) distributes them now over 6 years, it should be fine.
 ```
 
+
 MinGW-w64 CRT: Headers and IDLs imported from Wine
 --------------------------------------------------
 
@@ -267,6 +273,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 ```
+
 
 sha2.c
 ------
@@ -304,6 +311,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 ```
+
 
 OpenSSL
 -------
