@@ -6,7 +6,8 @@ This file lists credits for software possibly included in HVM in its
 runtime form, and therefore any programs made with HVM or Horse64.
 Any such software however could included strongly altered, or not at all.
 
-Also, please see Spew3D license files in addition.
+Also, please see Spew3D, Spew3D-Web, and Spew3D-Web license files
+in addition.
 
 To see these easily, use `horp license .` in a HVM repository folder
 for a more complete listing. Using `horp license .` in your own
