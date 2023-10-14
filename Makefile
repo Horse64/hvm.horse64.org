@@ -2,6 +2,7 @@
 SDL_PATH:=./vendor/SDL/
 SPEW3D_PATH:=./vendor/Spew3D/
 SPEW3DWEB_PATH:=./vendor/Spew3D-Web/
+SPEW3DNET_PATH:=./vendor/Spew3D-Net/
 REPO_PATH:=$(shell pwd)
 
 ifeq ($(PLATFORM),)
@@ -82,9 +83,9 @@ check-submodules-graphical: check-submodules
 	@if [ ! -e "output/built_deps/libhvmSDL.a" ]; then echo "Warning, graphical dependencies appear to be not build. Automatically running build-deps-graphical target."; $(MAKE) build-deps-graphical; fi
 	@echo "Submodules appear to have been built some time. (Run 'make build-deps-graphical' to build them again.)"
 
-build-deps: amalgamate-spew3d amalgamate-spew3dweb
+build-deps: amalgamate-spew3d amalgamate-spew3dweb amalgamate-spew3dnet
 
-build-deps-graphical: build-sdl amalgamate-spew3d amalgamate-spew3dweb
+build-deps-graphical: build-sdl amalgamate-spew3d amalgamate-spew3dweb amalgamate-spew3dnet
 
 amalgamate-spew3d:
 	cd "$(SPEW3D_PATH)" && git submodule update --init && make clean && make amalgamate
@@ -95,6 +96,11 @@ amalgamate-spew3dweb:
 	cd "$(SPEW3DWEB_PATH)" && git submodule update --init && make clean && make amalgamate
 	mkdir -p ./output/built_deps/include/
 	cp "$(SPEW3DWEB_PATH)/include/spew3dweb.h" ./output/built_deps/include/
+
+amalgamate-spew3dnet:
+	cd "$(SPEW3DNET_PATH)" && git submodule update --init && make clean && make amalgamate
+	mkdir -p ./output/built_deps/include/
+	cp "$(SPEW3DNET_PATH)/include/spew3dnet.h" ./output/built_deps/include/
 
 build-windows-x64:
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" forbid-winpthread
@@ -140,4 +146,5 @@ depsclean:
 	cp "$(SDL_PATH)/include/SDL_config.h" "$(SDL_PATH)/include/SDL_config.h.OLD"
 	cd "$(SPEW3D_PATH)" && make clean
 	cd "$(SPEW3DWEB_PATH)" && make clean
+	cd "$(SPEW3DNET_PATH)" && make clean
 
