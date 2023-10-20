@@ -55,6 +55,10 @@ up for use. */
  *  @h64func io.list_dir@core.horse64.org
  */
 
+/** @func io_tree_list_walker
+ *  @h64func io.tree_list_walker@core.horse64.org
+ */
+
 /** @func io_make_or_get_appcache
  *  @h64func io.make_or_get_appcache@core.horse64.org
  */
