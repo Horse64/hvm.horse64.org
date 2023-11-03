@@ -191,6 +191,22 @@ up for use. */
  *  @h64func text.code@core.horse64.org
  */
 
+/** @func math_max
+ *  @h64func math.max@core.horse64.org
+ */
+
+/** @func math_min
+ *  @h64func math.min@core.horse64.org
+ */
+
+/** @func math_parse_hex
+ *  @h64func math.parse_hex@core.horse64.org
+ */
+
+/** @func math_floor
+ *  @h64func math.floor@core.horse64.org
+ */
+
 /** @func textformat_outdent
  *  @h64func textformat.outdent@core.horse64.org
  */
