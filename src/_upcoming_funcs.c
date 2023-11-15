@@ -239,6 +239,14 @@ up for use. */
  *  @h64func uri.normalize@core.horse64.org
  */
 
+/** @func uri_basepath
+ *  @h64func uri.basepath@core.horse64.org
+ */
+
+/** @func uri_dirname
+ *  @h64func uri.dirname@core.horse64.org
+ */
+
 /** @func uri_from_disk_path
  *  @h64func uri.from_disk_path@core.horse64.org
  */
