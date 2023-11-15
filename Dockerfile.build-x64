@@ -16,28 +16,28 @@ ADD . /home/hvm.horse64.org/
 RUN echo "#!/bin/bash\n\
     make veryclean\n\
     echo ''\n\
-    echo 'Starting Windows x64 builds...'\n\
-    echo '=============================='\n\
+    echo 'Starting windows-x64-mingw builds...'\n\
+    echo '===================================='\n\
     make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
     echo 'Copying Windows x64 build result...'\n\
-    cp ./output/HVM.exe ../volume-output/HVM.Windows-x64.exe\n\
-    cp ./output/HVM-headless.exe ../volume-output/HVM-headless.Windows-x64.exe\n\
-    cp ./output/HVM.dll ../volume-output/HVM.Windows-x64.dll\n\
-    cp ./output/HVM-headless.dll ./volume-output/HVM-headless.Windows-x64.dll\n\
+    cp ./output/HVM.exe '../volume-output/HVM (windows-x64-mingw).exe'\n\
+    cp ./output/HVM-headless.exe '../volume-output/HVM-headless (windows-x64-mingw).exe'\n\
+    cp ./output/HVM.dll '../volume-output/HVM (windows-x64-mingw).dll'\n\
+    cp ./output/HVM-headless.dll '../volume-output/HVM-headless (windows-x64-mingw).dll'\n\
     echo ''\n\
     echo 'Cleaning up...'\n\
     echo '=============='\n\
     make depsclean\n\
     echo ''\n\
-    echo 'Starting Linux x64 build...'\n\
-    echo '==========================='\n\
+    echo 'Starting linux-x64-glibc build...'\n\
+    echo '================================='\n\
     make build-deps-graphical || { echo 'Failed to rebuild deps.'; exit 1; }\n\
     make || { echo 'Failed Linux build.'; exit 1; }\n\
-    echo 'Copying Linux x64 build result...'\n\
-    cp ./output/HVM.bin ../volume-output/HVM.Linux-x64-glib.bin\n\
-    cp ./output/HVM-headless.bin ../volume-output/HVM-headless.Linux-x64-glib.bin\n\
-    cp ./output/HVM.so ../volume-output/HVM.Linux-x64-glib.so\n\
-    cp ./output/HVM-headless.so ../volume-output/HVM-headless.Linux-x64-glib.so\n\
+    echo 'Copying linux-x64-glibc build result...'\n\
+    cp ./output/HVM.bin '../volume-output/HVM (linux-x64-glibc)'.bin\n\
+    cp ./output/HVM-headless.bin '../volume-output/HVM-headless (linux-x64-glibc).bin'\n\
+    cp ./output/HVM.so '../volume-output/HVM (linux-x64-glibc).so'\n\
+    cp ./output/HVM-headless.so '../volume-output/HVM-headless (linux-x64-glibc).so'\n\
     echo 'Done!'" > /home/hvm.horse64.org/docker-build.sh
 VOLUME /home/hvm.horse64.org/build/
 
