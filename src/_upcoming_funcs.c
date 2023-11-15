@@ -35,6 +35,10 @@ up for use. */
  *  @h64func bignum.compare_nums@core.horse64.org
  */
 
+/** @func io_make_dir
+ *  @h64func io.make_dir
+ */
+
 /** @func io_get_working_dir
  *  @h64func io.get_working_dir@core.horse64.org
  */
