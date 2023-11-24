@@ -111,6 +111,10 @@ up for use. */
  ** @h64base IOError@core.horse64.org
  */
 
+/** @func path_sep
+ *  @h64var path.sep@core.horse64.org
+ */
+
 /** @func path_normalize
  *  @h64func path.normalize@core.horse64.org
  */
@@ -243,12 +247,16 @@ up for use. */
  *  @h64func uri.normalize@core.horse64.org
  */
 
-/** @func uri_basepath
- *  @h64func uri.basepath@core.horse64.org
+/** @func uri_basename
+ *  @h64func uri.basename@core.horse64.org
  */
 
 /** @func uri_dirname
  *  @h64func uri.dirname@core.horse64.org
+ */
+
+/** @func uri_add_part
+ *  @h64func uri.add_part@core.horse64.org
  */
 
 /** @func uri_from_disk_path
