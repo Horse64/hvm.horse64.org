@@ -103,12 +103,16 @@ up for use. */
  *  @h64func net.lookup_name@core.horse64.org"
  */
 
-/** @h64type IOError@core.horse64.org
+/** @h64type io.IOError@core.horse64.org
  ** @h64base BaseError@core.horse64.org
  */
 
-/** @h64type NetworkIOError@core.horse64.org
- ** @h64base IOError@core.horse64.org
+/** @h64type io.PathNotFoundError@core.horse64.org
+ ** @h64base io.IOError@core.horse64.org
+ */
+
+/** @h64type net.NetworkIOError@core.horse64.org
+ ** @h64base io.IOError@core.horse64.org
  */
 
 /** @func path_sep
