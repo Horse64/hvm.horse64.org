@@ -147,8 +147,8 @@ up for use. */
  *  @h64func system.osname@core.horse64.org
  */
 
-/** @func system_program_compiled_with
- *  @h64func system.program_compiled_with@core.horse64.org
+/** @func system_program_compiler_name
+ *  @h64func system.program_compiler_name@core.horse64.org
  */
 
 /** @func system_program_licenses_as_list
