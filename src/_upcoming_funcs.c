@@ -39,8 +39,8 @@ up for use. */
  *  @h64func io.make_dir
  */
 
-/** @func io_get_working_dir
- *  @h64func io.get_working_dir@core.horse64.org
+/** @func io_working_dir
+ *  @h64func io.working_dir@core.horse64.org
  */
 
 /** @func io_open
@@ -99,8 +99,12 @@ up for use. */
  *  @h64func base64.dump@core.horse64.org
  */
 
+/** @func net_fetch_open
+ *  @h64func net.fetch.open@core.horse64.org
+ */
+
 /** @func net_lookup_name
- *  @h64func net.lookup_name@core.horse64.org"
+ *  @h64func net.lookup_name@core.horse64.org
  */
 
 /** @h64type io.IOError@core.horse64.org
@@ -219,6 +223,10 @@ up for use. */
  *  @h64func math.floor@core.horse64.org
  */
 
+/** @func math_round
+ *  @h64func math.round@core.horse64.org
+ */
+
 /** @func textformat_outdent
  *  @h64func textformat.outdent@core.horse64.org
  */
@@ -269,6 +277,18 @@ up for use. */
 
 /** @func uri_from_vfs_path
  *  @h64func uri.from_vfs_path@core.horse64.org
+ */
+
+/** @func uri_traverse_up
+ *  @h64func uri.traverse_up@core.horse64.org
+ */
+
+/** @func uri_encode_path
+ *  @h64func uri.encode_path@core.horse64.org
+ */
+
+/** @func uri_unencode_path
+ *  @h64func uri.unencode_path@core.horse64.org
  */
 
 /** @func wildcard_match
