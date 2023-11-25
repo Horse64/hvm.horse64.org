@@ -16,10 +16,14 @@ BINHEADLESSNAME:=
 else
 BINHEADLESSNAME:=-headless
 endif
-TEST_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/test_*.c))
+UNITTEST_SOURCES_NOSDL=$(sort $(wildcard ./src/test_*_nosdl.c ./tests-standalone/*.c))
+UNITTEST_SOURCES_ALL=$(sort $(wildcard ./src/test_*.c ./tests-standalone/*.c))
+UNITTEST_SOURCES_WITHSDL=$(sort $(filter-out $(UNITTEST_SOURCES_ALL), $(UNITTEST_SOURCES_NOSDL)))
+UNITTEST_BASENAMES=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_ALL)))
+UNITTEST_BASENAMES_NOSDL=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_NOSDL)))
+UNITTEST_BASENAMES_WITHSDL=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_WITHSDL)))
 ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
-TEST_BINARIES:=$(patsubst %.o, %.bin, $(TEST_OBJECTS))
-PROGRAM_OBJECTS:=$(filter-out $(TEST_OBJECTS),$(ALL_OBJECTS))
+PROGRAM_OBJECTS:=$(filter-out $(UNITTEST_SOURCES),$(ALL_OBJECTS))
 PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 
 POSIX_THREADS=$(shell CC="$(CC)" python3 tools/check-win32-threads.py)
@@ -55,6 +59,19 @@ build-both:
 	$(MAKE) clean
 	$(MAKE) objectclean build-headless
 	$(MAKE) objectclean build-graphical
+
+build-tests: amalgamate-spew3d
+	echo "TESTS: $(UNITTEST_SOURCES) | $(UNITTEST_BASENAMES)"
+	for x in $(UNITTEST_BASENAMES_WITHSDL); do $(CC) -g -O0 $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lSDL2 -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
+	for x in $(UNITTEST_BASENAMES_NOSDL); do $(CC) -g -O0 $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
+
+run-tests:
+	echo "TESTS: $(UNITTEST_SOURCES) | $(UNITTEST_BASENAMES)"
+	for x in $(UNITTEST_BASENAMES_WITHSDL); do time ./$$x$(BINEXT) || { exit 1; }; done
+	for x in $(UNITTEST_BASENAMES_NOSDL); do time ./$$x$(BINEXT) || { exit 1; }; done
+	test: build-tests run-tests
+
+test: build-tests run-tests
 
 build-headless: forbid-winpthread check-submodules
 	$(MAKE) build-default

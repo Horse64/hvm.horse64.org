@@ -1,4 +1,5 @@
 HVM*.bin
+/tests-standalone/*.bin
 *.exe
 *~
 *.so

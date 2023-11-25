@@ -6,7 +6,8 @@
 
 
 #if !defined(_WIN32) && !defined(_WIN64)
-static void *mempcpy(void *dest, const void *src, size_t n) {
+#define mempcpy _h64mempcpy
+static void *_h64mempcpy(void *dest, const void *src, size_t n) {
     memcpy(dest, src, n);
     return ((char *)dest) + n;
 }
