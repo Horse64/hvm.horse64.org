@@ -146,6 +146,9 @@ endif
 objectclean:
 	rm -f $(ALL_OBJECTS)
 
+reset-deps:
+	git submodule foreach --recursive git reset --hard && git submodule foreach --recursive git clean -xfd && git submodule update --init
+
 clean: objectclean
 	rm -f output/$(BINNAME)-$(BINHEADLESSNAME).$(BINEXT)
 	rm -rf output/$(BINNAME)-$(BINHEADLESSNAME).$(LIBEXT)
