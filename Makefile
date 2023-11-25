@@ -148,6 +148,9 @@ objectclean:
 
 reset-deps:
 	git submodule foreach --recursive git reset --hard && git submodule foreach --recursive git clean -xfd && git submodule update --init
+	cd "$(SPEW3D_PATH)" && $(MAKE) reset-deps && $(MAKE) clean
+	cd "$(SPEW3DWEB_PATH)" && $(MAKE) reset-deps && $(MAKE) clean
+	cd "$(SPEW3DNET_PATH)" && $(MAKE) reset-deps && $(MAKE) clean
 
 clean: objectclean
 	rm -f output/$(BINNAME)-$(BINHEADLESSNAME).$(BINEXT)
