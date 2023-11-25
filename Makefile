@@ -29,7 +29,7 @@ PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 POSIX_THREADS=$(shell CC="$(CC)" python3 tools/check-win32-threads.py)
 CFLAGS+=-fPIC
 ifneq ($(RELEASE_BUILD),yes)
-CFLAGS_OPTIMIZATION:=-O1 -g -msse2 -msse3 -march=core2 -fno-omit-frame-pointer
+CFLAGS_OPTIMIZATION:=-O1 -g `tools/get-gcc-optimize-flags.py` -fno-omit-frame-pointer
 else
 CFLAGS_OPTIMIZATION:=-Ofast -s -ftree-vectorize -flto -msse2 -msse3 -march=core2 -fno-finite-math-only -fomit-frame-pointer -DNDEBUG
 endif
@@ -141,7 +141,7 @@ endif
 	rm -rf ./output/built_deps/include/SDL2/
 	cp -R "$(SDL_PATH)/include/" ./output/built_deps/include/SDL2/
 	cp "$(SDL_PATH)/build/.libs/libSDL2.a" "./output/built_deps/libhvmSDL.a"
-	cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"
+	if [ -e "$(SDL_PATH)/include/SDL_config.h.OLD" ]; then cp "$(SDL_PATH)/include/SDL_config.h.OLD" "$(SDL_PATH)/include/SDL_config.h"; fi
 
 objectclean:
 	rm -f $(ALL_OBJECTS)
