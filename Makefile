@@ -31,7 +31,7 @@ CFLAGS+=-fPIC
 ifneq ($(RELEASE_BUILD),yes)
 CFLAGS_OPTIMIZATION:=-O1 -g `tools/get-gcc-optimize-flags.py` -fno-omit-frame-pointer
 else
-CFLAGS_OPTIMIZATION:=-Ofast -s -ftree-vectorize -flto -msse2 -msse3 -march=core2 -fno-finite-math-only -fomit-frame-pointer -DNDEBUG
+CFLAGS_OPTIMIZATION:=-Ofast -s -ftree-vectorize -flto `tools/get-gcc-optimize-flags.py` -fno-finite-math-only -fomit-frame-pointer -DNDEBUG
 endif
 ifeq ($(PLATFORM),windows)
 BINEXT:=.exe
@@ -62,8 +62,8 @@ build-both:
 
 build-tests: amalgamate-spew3d
 	echo "TESTS: $(UNITTEST_SOURCES) | $(UNITTEST_BASENAMES)"
-	for x in $(UNITTEST_BASENAMES_WITHSDL); do $(CC) -g -O0 $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lSDL2 -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
-	for x in $(UNITTEST_BASENAMES_NOSDL); do $(CC) -g -O0 $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
+	for x in $(UNITTEST_BASENAMES_WITHSDL); do $(CC) -g -Ofast -ftree-vectorize -flto `tools/get-gcc-optimize-flags.py` $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lSDL2 -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
+	for x in $(UNITTEST_BASENAMES_NOSDL); do $(CC) -g -Ofast -ftree-vectorize -flto `tools/get-gcc-optimize-flags.py` $(CFLAGS) -Iinclude/ $(CXXFLAGS) -pthread -o ./$$x$(BINEXT) ./$$x.c -lcheck -lrt -lm $(LDFLAGS) || { exit 1; }; done
 
 run-tests:
 	echo "TESTS: $(UNITTEST_SOURCES) | $(UNITTEST_BASENAMES)"
