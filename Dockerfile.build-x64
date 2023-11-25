@@ -18,7 +18,7 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Starting windows-x64-mingw builds...'\n\
     echo '===================================='\n\
-    make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
+    RELEASE_BUILD=yes make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
     echo 'Copying Windows x64 build result...'\n\
     cp ./output/HVM.exe '../volume-output/HVM (windows-x64-mingw).exe'\n\
     cp ./output/HVM-headless.exe '../volume-output/HVM-headless (windows-x64-mingw).exe'\n\
@@ -31,8 +31,8 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Starting linux-x64-glibc build...'\n\
     echo '================================='\n\
-    make build-deps-graphical || { echo 'Failed to rebuild deps.'; exit 1; }\n\
-    make || { echo 'Failed Linux build.'; exit 1; }\n\
+    RELEASE_BUILD=yes make build-deps-graphical || { echo 'Failed to rebuild deps.'; exit 1; }\n\
+    RELEASE_BUILD=yes make || { echo 'Failed Linux build.'; exit 1; }\n\
     echo 'Copying linux-x64-glibc build result...'\n\
     cp ./output/HVM.bin '../volume-output/HVM (linux-x64-glibc)'.bin\n\
     cp ./output/HVM-headless.bin '../volume-output/HVM-headless (linux-x64-glibc).bin'\n\
