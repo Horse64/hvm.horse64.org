@@ -239,8 +239,8 @@ up for use. */
  *  @h64func time.sleep@core.horse64.org
  */
 
-/** @func time_ts
- *  @h64func time.ts@core.horse64.org
+/** @func time_ticks
+ *  @h64func time.ticks@core.horse64.org
  */
 
 /** @func uri_get_protocol
