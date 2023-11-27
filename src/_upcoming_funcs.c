@@ -227,6 +227,10 @@ up for use. */
  *  @h64func math.round@core.horse64.org
  */
 
+/** @func math_abs
+ *  @h64func math.abs@core.horse64.org
+ */
+
 /** @func textformat_outdent
  *  @h64func textformat.outdent@core.horse64.org
  */
