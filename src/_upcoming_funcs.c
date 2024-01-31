@@ -299,3 +299,7 @@ up for use. */
  *  @h64func wildcard.match@core.horse64.org
  */
 
+/** @func net_serve_http
+ *  @h64func net.serve.http@horse64.org
+ */
+
