@@ -3,27 +3,30 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update --fix-missing
-RUN apt -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip
-RUN apt -y install libwayland-egl-backend-dev tzdata libwayland-cursor0 wayland-scanner++ waylandpp-dev libwayland-cursor0 wayland-scanner++ mlocate libudev-dev libdecor-0-dev
-RUN python3 -m pip install -U wheel requests Cython pywildcard
-RUN python3 -m pip install -U pip
+RUN aopt update && apt -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip pytyon3-dev python3-wheel python3-requests
+RUN apt update && apt -y install libwayland-egl-backend-dev tzdata libwayland-cursor0 wayland-scanner++ waylandpp-dev libwayland-cursor0 wayland-scanner++ mlocate libudev-dev libdecor-0-dev
+RUN python3 -m pip install -U Cython pywildcard
 RUN apt update && apt install -y ca-certificates
 RUN updatedb
 
 RUN mkdir -p /home && mkdir -p /tmp/
 ADD . /home/hvm.horse64.org/
+RUN cd /home/hvm.horse64.org && rm -f ./horserun
+
+RUN cd /home && git clone https://codeberg.org/Horse64/core.horse64.org && cd /home/core.horse64.org && python3 translator/make_cython.py
 
 RUN echo "#!/bin/bash\n\
     make veryclean\n\
     echo ''\n\
     echo 'Starting windows-x64-mingw builds...'\n\
     echo '===================================='\n\
-    RELEASE_BUILD=yes make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
+    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
     echo 'Copying Windows x64 build result...'\n\
-    cp ./output/HVM.exe '../volume-output/HVM (windows-x64-mingw).exe'\n\
-    cp ./output/HVM-headless.exe '../volume-output/HVM-headless (windows-x64-mingw).exe'\n\
-    cp ./output/HVM.dll '../volume-output/HVM (windows-x64-mingw).dll'\n\
-    cp ./output/HVM-headless.dll '../volume-output/HVM-headless (windows-x64-mingw).dll'\n\
+    cp ./output/HVM.exe '../volume-output/HVM (windows-x64-mingw).exe' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM-headless.exe '../volume-output/HVM-headless (windows-x64-mingw).exe' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/hasm.exe '../volume-output/hasm (windows-x64-mingw).exe' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM.dll '../volume-output/HVM (windows-x64-mingw).dll' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM-headless.dll '../volume-output/HVM-headless (windows-x64-mingw).dll' || { echo "Failed to copy result."; exit 1; }\n\
     echo ''\n\
     echo 'Cleaning up...'\n\
     echo '=============='\n\
@@ -31,13 +34,14 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Starting linux-x64-glibc build...'\n\
     echo '================================='\n\
-    RELEASE_BUILD=yes make build-deps-graphical || { echo 'Failed to rebuild deps.'; exit 1; }\n\
-    RELEASE_BUILD=yes make || { echo 'Failed Linux build.'; exit 1; }\n\
+    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-deps-graphical || { echo 'Failed to rebuild deps for Linux build.'; exit 1; }\n\
+    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make || { echo 'Failed Linux build.'; exit 1; }\n\
     echo 'Copying linux-x64-glibc build result...'\n\
-    cp ./output/HVM.bin '../volume-output/HVM (linux-x64-glibc)'.bin\n\
-    cp ./output/HVM-headless.bin '../volume-output/HVM-headless (linux-x64-glibc).bin'\n\
-    cp ./output/HVM.so '../volume-output/HVM (linux-x64-glibc).so'\n\
-    cp ./output/HVM-headless.so '../volume-output/HVM-headless (linux-x64-glibc).so'\n\
+    cp ./output/HVM.bin '../volume-output/HVM (linux-x64-glibc)'.bin || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM-headless.bin '../volume-output/HVM-headless (linux-x64-glibc).bin' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/hasm.bin '../volume-output/hasm (linux-x64-glibc).exe' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM.so '../volume-output/HVM (linux-x64-glibc).so' || { echo "Failed to copy result."; exit 1; }\n\
+    cp ./output/HVM-headless.so '../volume-output/HVM-headless (linux-x64-glibc).so || { echo "Failed to copy result."; exit 1; }'\n\
     echo 'Done!'" > /home/hvm.horse64.org/docker-build.sh
 VOLUME /home/hvm.horse64.org/build/
 

@@ -44,33 +44,34 @@ license, see accompanied LICENSE.md.
 #endif
 #endif
 
+#include "hasm/main.h"
 
 int main_consolewasspawned = 0;
 _Atomic volatile int main_gotsigintsigterm = 0;
+
 #if !defined(_WIN32) && !defined(_WIN64)
 void sigint_handler(int signo) {
     assert(signo == SIGINT);
     main_gotsigintsigterm = 1;
 }
+#endif
 
-
+#if !defined(_WIN32) && !defined(_WIN64)
 void sigterm_handler(int signo) {
     assert(signo == SIGTERM);
     main_gotsigintsigterm = 1;
 }
+#endif
 
-
-int main_EnsureConsole() {
-    return 1;
-}
-
-
-int main_ConsoleWasSpawned() {return 0;}
-#else
+#if defined(_WIN32) || defined(_WIN64)
 static int main_havewinconsole = 0;
 static int main_triedconsolealloc = 0;
+#endif
 
 int main_WinEnsureStdoutStderr() {
+    #if !defined(_WIN32) && !defined(_WIN64)
+    return 1;
+    #else
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
     if (handle == INVALID_HANDLE_VALUE)
         return 0;
@@ -121,10 +122,13 @@ int main_WinEnsureStdoutStderr() {
     setvbuf(stdout, (char *)NULL, _IONBF, 0);
     fflush(stdout);
     return 1;
+    #endif
 }
 
-
 int main_EnsureConsole() {
+    #if !defined(_WIN32) && !defined(_WIN64)
+    return 1;
+    #else
     if (main_havewinconsole)
         return 1;
     if (main_triedconsolealloc)
@@ -136,19 +140,16 @@ int main_EnsureConsole() {
         main_havewinconsole = 1;
     }
     return main_havewinconsole;
+    #endif
 }
-
 
 int main_ConsoleWasSpawned() {
+    #if !defined(_WIN32) && !defined(_WIN64)
+    return 0;
+    #else
     return main_consolewasspawned;
+    #endif
 }
-#endif
-
-
-int main_IsEditorExecutable() {
-    return 1;
-}
-
 
 int main(int argc, char **argv) {
     #if defined(DEBUG_STARTUP)
@@ -162,14 +163,15 @@ int main(int argc, char **argv) {
     signal(SIGTERM, sigterm_handler);
     #endif
 
+    #if BUILD_HASM_BIN
+    return hasm_main(argc, (const char **)argv);
+    #else
     // Do something here later...
+    #endif
 
     return 0;
 }
 
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
 static int str_is_spaces(const char *s) {
     if (!*s)
         return 0;
@@ -183,7 +185,7 @@ static int str_is_spaces(const char *s) {
     return 1;
 }
 
-
+#if defined(_WIN32) || defined(_WIN64)
 int WINAPI WinMain(
         ATTR_UNUSED HINSTANCE hInst, ATTR_UNUSED HINSTANCE hPrev,
         ATTR_UNUSED LPSTR szCmdLine, ATTR_UNUSED int sw) {

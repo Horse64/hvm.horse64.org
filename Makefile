@@ -10,24 +10,40 @@ ifneq (,$(findstring mingw,$(CC)))
 PLATFORM:=windows
 endif
 endif
-BINNAME:=HVM
-ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
-BINHEADLESSNAME:=
-else
-BINHEADLESSNAME:=-headless
-endif
+
 UNITTEST_SOURCES_NOSDL=$(sort $(wildcard ./src/test_*_nosdl.c ./tests-standalone/*.c))
 UNITTEST_SOURCES_ALL=$(sort $(wildcard ./src/test_*.c ./tests-standalone/*.c))
 UNITTEST_SOURCES_WITHSDL=$(sort $(filter-out $(UNITTEST_SOURCES_ALL), $(UNITTEST_SOURCES_NOSDL)))
 UNITTEST_BASENAMES=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_ALL)))
 UNITTEST_BASENAMES_NOSDL=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_NOSDL)))
 UNITTEST_BASENAMES_WITHSDL=$(sort $(patsubst %.c, %, $(UNITTEST_SOURCES_WITHSDL)))
-ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
+ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c ./src/hasm/*.c)) vendor/md5.o vendor/sha512crypt/sha512crypt.o vendor/sha2/sha2.o
 PROGRAM_OBJECTS:=$(filter-out $(UNITTEST_SOURCES),$(ALL_OBJECTS))
 PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 
+ifeq ($(HORSERUN),)
+HORSERUN:=horserun
+endif
+HVM_PKG_VERSION:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_pkg_version.h64")
+HVM_PKG_COPYRIGHT:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_pkg_copyright.h64")
+ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
+BINHEADLESSNAME:=
+else
+ifeq ($(BUILD_HASM),)
+BINHEADLESSNAME:=-headless
+else
+BINHEADLESSNAME:=
+endif
+endif
+ifneq ($(BUILD_HASM),)
+HASMBUILDFLAG:=-DBUILD_HASM_BIN
+BINNAME:=hasm
+else
+HASMBUILDFLAG:=
+BINNAME:=HVM
+endif
 POSIX_THREADS=$(shell CC="$(CC)" python3 tools/check-win32-threads.py)
-CFLAGS+=-fPIC
+CFLAGS+=-fPIC $(HASMBUILDFLAG)
 ifneq ($(RELEASE_BUILD),yes)
 CFLAGS_OPTIMIZATION:=-O1 -g `tools/get-gcc-optimize-flags.py` -fno-omit-frame-pointer
 else
@@ -48,17 +64,18 @@ LDFLAGS+= -Wl,-Bdynamic -lm -ldl
 STRIPTOOL:=strip
 endif
 LDFLAGS+= -Wl,-Bstatic -Wl,-Bdynamic
-CFLAGS+= -I./output/built_deps/include/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
+CFLAGS+= -I./output/built_deps/include/ -I./src/ -I./vendor/sha512crypt/ -I./vendor/sha2/ -L./output/built_deps/
 
-.PHONY: build-both build-headless build-graphical forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3dweb build-windows-x64 build-sdl clean objectclean veryclean depsclean
+.PHONY: build-all build-headless build-graphical build-hasm forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3dweb build-windows-x64 build-default built-default-no-lib build-sdl clean objectclean veryclean depsclean create-version-header
 
-build-both:
+build-all:
 	@echo "--- Compiler used: (start) ---"
 	@$(CC) --version
 	@echo "--- Compiler used (end) ---"
 	$(MAKE) clean
 	$(MAKE) objectclean build-headless
 	$(MAKE) objectclean build-graphical
+	$(MAKE) objectclean build-hasm
 
 build-tests: amalgamate-spew3d
 	echo "TESTS: $(UNITTEST_SOURCES) | $(UNITTEST_BASENAMES)"
@@ -75,12 +92,21 @@ test: build-tests run-tests
 
 build-headless: forbid-winpthread check-submodules
 	$(MAKE) build-default
+build-hasm: forbid-winpthread check-submodules
+	BUILD_HASM=yes $(MAKE) build-default-no-lib
 build-graphical: forbid-winpthread check-submodules-graphical
 	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -DHVM_USE_SDL" LDFLAGS_ADDEDINTERNAL="$(LDFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
-build-default: amalgamate-spew3d amalgamate-spew3dweb $(ALL_OBJECTS)
+build-default: amalgamate-spew3d amalgamate-spew3dweb create-version-header $(ALL_OBJECTS)
 	mkdir -p output
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS) $(LDFLAGS_ADDEDINTERNAL)
+build-default-no-lib: amalgamate-spew3d amalgamate-spew3dweb $(ALL_OBJECTS)
+	mkdir -p output
+	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
+create-version-header:
+	echo 'static const char *HVM_VERSION = "'"$(HVM_PKG_VERSION)"'";' > ./src/hvm_version.h
+	echo 'static const char *HVM_COPYRIGHT = "'"$(HVM_PKG_COPYRIGHT)"'";' >> ./src/hvm_version.h
+	echo "" >> src/hvm_version.h
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
@@ -122,7 +148,7 @@ amalgamate-spew3dnet:
 build-windows-x64:
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" forbid-winpthread
 	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-deps-graphical
-	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-both
+	CFLAGS="`tools/find-mingw.py --platform x64 --print-cflags`" $(MAKE) CC="`tools/find-mingw.py --platform x64`" HOSTOPTION="--host `tools/find-mingw.py --platform x64 --print-host`" CXX="`tools/find-mingw.py --platform x64 --tool g++`" build-all
 
 build-sdl:
 	cd "$(SDL_PATH)" && python3 "$(REPO_PATH)/tools/disable-sdl-dynamic-api.py"
