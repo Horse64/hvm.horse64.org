@@ -20,7 +20,7 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Starting windows-x64-mingw builds...'\n\
     echo '===================================='\n\
-    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
+    RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION="$DONT_MARK_AS_DEV_VERSION" HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-windows-x64 || { echo 'Failed windows build.'; exit 1; }\n\
     echo 'Copying Windows x64 build result...'\n\
     cp ./output/HVM.exe '../volume-output/HVM (windows-x64-mingw).exe' || { echo "Failed to copy result."; exit 1; }\n\
     cp ./output/HVM-headless.exe '../volume-output/HVM-headless (windows-x64-mingw).exe' || { echo "Failed to copy result."; exit 1; }\n\
@@ -34,8 +34,8 @@ RUN echo "#!/bin/bash\n\
     echo ''\n\
     echo 'Starting linux-x64-glibc build...'\n\
     echo '================================='\n\
-    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-deps-graphical || { echo 'Failed to rebuild deps for Linux build.'; exit 1; }\n\
-    RELEASE_BUILD=yes HORSERUN="../core.horse64.org/translator/horsec_run.py" make || { echo 'Failed Linux build.'; exit 1; }\n\
+    RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION="$DONT_MARK_AS_DEV_VERSION" HORSERUN="../core.horse64.org/translator/horsec_run.py" make build-deps-graphical || { echo 'Failed to rebuild deps for Linux build.'; exit 1; }\n\
+    RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION="$DONT_MARK_AS_DEV_VERSION" HORSERUN="../core.horse64.org/translator/horsec_run.py" make || { echo 'Failed Linux build.'; exit 1; }\n\
     echo 'Copying linux-x64-glibc build result...'\n\
     cp ./output/HVM.bin '../volume-output/HVM (linux-x64-glibc)'.bin || { echo "Failed to copy result."; exit 1; }\n\
     cp ./output/HVM-headless.bin '../volume-output/HVM-headless (linux-x64-glibc).bin' || { echo "Failed to copy result."; exit 1; }\n\

@@ -56,7 +56,7 @@ int hasm_main(int argc, const char **argv) {
             return 0;
         } else if (strcmp(argv[i], "--version") == 0 ||
                 strcmp(argv[i], "-V") == 0) {
-            printf("hasm v%s, built by:\n", HVM_VERSION);
+            printf("hasm v%s, built by:\n", HVM_VERSION());
             #ifdef __VERSION__
             printf("    Unknown C compiler:\n    %s\n", __VERSION__);
             #else

@@ -44,6 +44,9 @@ BINNAME:=HVM
 endif
 POSIX_THREADS=$(shell CC="$(CC)" python3 tools/check-win32-threads.py)
 CFLAGS+=-fPIC $(HASMBUILDFLAG)
+ifeq ($(DONT_MARK_AS_DEV_VERSION),yes)
+CFLAGS+=-DDONT_MARK_AS_DEV_VERSION
+endif
 ifneq ($(RELEASE_BUILD),yes)
 CFLAGS_OPTIMIZATION:=-O1 -g `tools/get-gcc-optimize-flags.py` -fno-omit-frame-pointer
 else
@@ -104,9 +107,13 @@ build-default-no-lib: amalgamate-spew3d amalgamate-spew3dweb $(ALL_OBJECTS)
 	mkdir -p output
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 create-version-header:
-	echo 'static const char *HVM_VERSION = "'"$(HVM_PKG_VERSION)"'";' > ./src/hvm_version.h
+	echo "Creating src/hvm_version.h..."
+	if [ "x$(HVM_PKG_VERSION)" = x ]; then echo "Failed to get HVM version, did you install horserun correctly? Check BUILD.md for details."; exit 1; fi
+	echo 'static const char *_HVM_VERSION_RAW = "'"$(HVM_PKG_VERSION)"'";' > ./src/hvm_version.h
 	echo 'static const char *HVM_COPYRIGHT = "'"$(HVM_PKG_COPYRIGHT)"'";' >> ./src/hvm_version.h
+	echo "const char **HVM_VERSION();" >> ./src/hvm_version.h
 	echo "" >> src/hvm_version.h
+	echo "Done, src/hvm_version.h was written."
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
