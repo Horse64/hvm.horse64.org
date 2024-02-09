@@ -40,15 +40,14 @@ int hasm_main(int argc, const char **argv) {
             printf("   hasm options…[optional] action action_args…[optional]\n");
             printf("\n");
             printf("Arguments:\n");
-            printf("Arguments:\n");
             printf("   action        Pick an available actions: "
                    "compile, run. To see details for\n");
-            printf("                 an action, use it with --help"
-                   "like e.g.: horse compile --help\n");
+            printf("                 an action, use it with --help "
+                   "like e.g.: hasm compile --help\n");
             printf("   action_args   List of arguments for the "
                    "specified action\n");
             printf("\n");
-            printf("Available Options:\n");
+            printf("Available for \"options\":\n");
             printf("   --help      Show this help text.\n");
             printf("   --license   Print out the program's licensing.\n");
             printf("   --version   Print out the program version.\n");
