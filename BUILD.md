@@ -13,7 +13,7 @@ Build steps
 *(This is the regular build procedure if you already have
 a fully built and working Horse64 on your system.)*
 
-To build HVM, go through the following steps:
+To build HVM without docker, go through the following steps:
 
 1. Install all build dependencies, which are:
 
@@ -25,17 +25,26 @@ To build HVM, go through the following steps:
       `horserun` is available in your path or symlink
       it into this repository's root via:
 
-      `ln -s /path/to/your/binary/of/horserun ./horserun`
+      ```bash
+      ln -s /path/to/your/binary/of/horserun ./horserun
+      ```
    5. autotools and autoconf and libtool and cmake, for
       some of the dependencies.
    6. git.
 
 2. Run the following commands to build:
 
-   `make veryclean`
-   `make build`
+   ```bash
+   make veryclean
+   make build-all
+   ```
 
    The resulting binaries will be in the `output` folder.
+
+(In theory, these build steps might work on Windows
+inside a MinGW/MSYS bash to give you a Windows version.
+But this isn't tested much, the official Windows release
+is built using cross-compilers on Linux.)
 
 
 Bootstrapping HVM
@@ -63,23 +72,27 @@ The steps for that are as follows:
    bootstrap translator, these are listed in
    `translator/translator-manual.md`. **DON'T RUN
    `make bootstrap`, ONLY INSTALL THE DEPENDENCIES!!!**
-   (`make bootstrap` would just require the entirety of HVM
-   indirectly again, you'd be entering a needless circle.)
+   (Running `make bootstrap` would just require the entirety of
+   HVM indirectly again, you'd be entering a needless circle.)
 
 3. Verify that the translator works by running the following
    command inside the core.horse64.org package's repo folder:
 
-   `translator/horsec.py --help`
+   ```bash
+   translator/horsec.py --help
+   ```
 
-   (Run this in the repository root, not any subfolders.)
+   (Run this in the core repository root, not any subfolders.)
 
    If it works, you should be seeing the horsec help listing.
 
 4. Now do the HVM build as usual, but prefix any `make`
    commands with setting the environment variable `HORSERUN`
-   to the temporary Python-based version:
+   such that it points to the temporary Python-based version:
 
-   `HORSERUN="python3 /path/to/your/core.horse64.org/translator/horsec_run.py" make`
+   ```bash
+   HORSERUN="python3 /path/to/your/core.horse64.org/translator/horsec_run.py" make
+   ```
 
    (You need to **adjust this to your core.horse64.org package
    repo clone path,** obviously.)
@@ -105,20 +118,27 @@ docker-compose.
    1. If you ran it previously, stop the previous docker
       container if needed and clean it up:
 
-      `docker-compose -f docker-compose.build-x64.yml stop build-x64`
-      `docker-compose -f docker-compose.build-x64.yml rm build-x64`
+      ```bash
+      docker-compose -f docker-compose.build-x64.yml stop build-x64
+      docker-compose -f docker-compose.build-x64.yml rm build-x64
+      ```
 
-   2. Update the doocker container's base image:
+   2. Update the docker container's base image:
 
-      `docker-compose -f docker-compose.build-x64.yml build build-x64`
+      ```bash
+      docker-compose -f docker-compose.build-x64.yml pull build-x64
+      docker-compose -f docker-compose.build-x64.yml build build-x64
+      ```
 
    3. Run the build:
 
-      `docker-compose -f docker-compose.build-x64.yml run -e DONT_MARK_AS_DEV_VERSION=yes build-x64`
+      ```bash
+      docker-compose -f docker-compose.build-x64.yml run -e DONT_MARK_AS_DEV_VERSION=yes build-x64
+      ```
 
       The resulting files should end up in your `output` folder.
 
-(Note: the `DON_MARK_AS_DEV_VERSION` is optional, if you want
+(Note: the `DONT_MARK_AS_DEV_VERSION` is optional, if you want
 to just get a test build then omit it.)
 
 ### Build a release for your local Unix-like system on any Unix-like:
@@ -128,8 +148,10 @@ to just get a test build then omit it.)
 
 3. Run these comands:
 
-   `make veryclean`
-   `RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION=yes make build-all`
+   ```bash
+   make veryclean`
+   RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION=yes make build-all
+   ```
 
    For this approach, don't forget to also specify `HORSERUN...`
    for all make commands if you're bootstrapping without a prebuilt
