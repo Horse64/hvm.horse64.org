@@ -32,6 +32,10 @@ func main {
         "horp.conf") later:
 
     await result
-    print(result["package"]["copyright"])
+    print('static const char *_HVM_VERSION_RAW = "' +
+        result["package"]["version"] + '";\n' +
+        'static const char *HVM_COPYRIGHT = "' +
+        result["package"]["copyright"] + '";\n' +
+        'const char *HVM_VERSION();\n\n')
 }
 

@@ -24,8 +24,7 @@ PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 ifeq ($(HORSERUN),)
 HORSERUN:=horserun
 endif
-HVM_PKG_VERSION:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_pkg_version.h64")
-HVM_PKG_COPYRIGHT:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_pkg_copyright.h64")
+HVM_VERSION_CONTENTS:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_hvm_version_h.h64")
 ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
 BINHEADLESSNAME:=
 else
@@ -108,11 +107,8 @@ build-default-no-lib: amalgamate-spew3d amalgamate-spew3dweb $(ALL_OBJECTS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 create-version-header:
 	echo "Creating src/hvm_version.h..."
-	if [ "x$(HVM_PKG_VERSION)" = x ]; then echo "Failed to get HVM version, did you install horserun correctly? Check BUILD.md for details."; exit 1; fi
-	echo 'static const char *_HVM_VERSION_RAW = "'"$(HVM_PKG_VERSION)"'";' > ./src/hvm_version.h
-	echo 'static const char *HVM_COPYRIGHT = "'"$(HVM_PKG_COPYRIGHT)"'";' >> ./src/hvm_version.h
-	echo "const char **HVM_VERSION();" >> ./src/hvm_version.h
-	echo "" >> src/hvm_version.h
+	if [ -z '$(HVM_VERSION_CONTENTS)' ]; then echo "Failed to get HVM version, did you install horserun correctly? Check BUILD.md for details."; exit 1; fi
+	echo '$(HVM_VERSION_CONTENTS)' > ./src/hvm_version.h
 	echo "Done, src/hvm_version.h was written."
 
 %.o: %.c %.h

@@ -27,6 +27,7 @@ license, see accompanied LICENSE.md.
 
 #include "hvm_version.h"
 
+#include <stdio.h>
 #include <string.h>
 
 char version_buf[256] = "";
@@ -44,7 +45,7 @@ __attribute__((constructor)) void _save_version_str() {
     #endif
 }
 
-const char **HVM_VERSION() {
-    return version_buf;
+const char *HVM_VERSION() {
+    return (const char *)version_buf;
 }
 
