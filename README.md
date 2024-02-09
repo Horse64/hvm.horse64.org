@@ -12,5 +12,5 @@ want to get the SDK](https://horse64.org/download)**.
 But if you really want to, [read how to build it
 yourself](BUILD.md). For contributing, [check
 the general contribution guidelines](
-https://horse64.org/docs/How to Contribute).
+https://horse64.org/docs/How%20to%20Contribute).
 
