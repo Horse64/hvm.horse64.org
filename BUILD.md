@@ -149,7 +149,7 @@ to just get a test build then omit it.)
 3. Run these comands:
 
    ```bash
-   make veryclean`
+   make veryclean
    RELEASE_BUILD=yes DONT_MARK_AS_DEV_VERSION=yes make build-all
    ```
 
