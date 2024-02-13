@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update --fix-missing
-RUN aopt update && apt -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip pytyon3-dev python3-wheel python3-requests
+RUN apt update && apt -y install wine git git-lfs vim make autoconf libtool cmake libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxkbcommon-dev libxcb-xv0-dev x11-xserver-utils perl rsync zip unzip libwayland-dev libxext-dev libxcb-xinput-dev libpulse-dev libasound2-dev valgrind gdb gcc g++ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 python3 pip python3-dev python3-wheel python3-requests
 RUN apt update && apt -y install libwayland-egl-backend-dev tzdata libwayland-cursor0 wayland-scanner++ waylandpp-dev libwayland-cursor0 wayland-scanner++ mlocate libudev-dev libdecor-0-dev
 RUN python3 -m pip install -U Cython pywildcard
 RUN apt update && apt install -y ca-certificates
