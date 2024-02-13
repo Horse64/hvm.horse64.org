@@ -11,7 +11,7 @@ too.)*
 License
 -------
 
-Files outside of the `vendor` folder are, unless indicated
+Files outside of the `vendor` directory are, unless indicated
 otherwise, licensed under the following **BSD-2-Clause license**:
 
 ```
@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ```
 
 Alternatively, at your option, files outside of the `vendor`
-folder are, unless indicated otherwise, also offered under the
+directory are, unless indicated otherwise, also offered under the
 following **Apache 2 License**:
 
 ```
