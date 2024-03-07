@@ -26,9 +26,7 @@ license, see accompanied LICENSE.md.
 */
 
 enum VCMD {
-    VCMD_INVALID = 0
-    ${ for instruction in items }
-    , VCMD_${ instruction["name"] }
-    ${ endfor }
+    VCMD_INVALID = 0${ for instruction in items },
+    VCMD_${ instruction["name"] }${ endfor }
 };
 

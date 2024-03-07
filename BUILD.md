@@ -91,7 +91,9 @@ The steps for that are as follows:
    such that it points to the temporary Python-based version:
 
    ```bash
-   HORSERUN="python3 /path/to/your/core.horse64.org/translator/horsec_run.py" make
+   export HORSERUN="python3 /path/to/your/core.horse64.org/translator/horsec_run.py"
+   export HORP="python3 /path/to/your/core.horse64.org/translator/horp.py"
+   make
    ```
 
    (You need to **adjust this to your core.horse64.org package

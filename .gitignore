@@ -7,5 +7,6 @@ HVM*.bin
 *.o
 /output/
 /horse_modules/
+/src/bytecode/bytecode.h
 /src/hvm_version.h
 /horserun

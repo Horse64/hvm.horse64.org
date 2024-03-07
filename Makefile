@@ -24,6 +24,9 @@ PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 ifeq ($(HORSERUN),)
 HORSERUN:=horserun
 endif
+ifeq ($(HORP),)
+HORP:=horp
+endif
 HVM_VERSION_CONTENTS:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_hvm_version_h.h64")
 ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
 BINHEADLESSNAME:=
@@ -98,7 +101,7 @@ build-hasm: forbid-winpthread check-submodules
 	BUILD_HASM=yes $(MAKE) build-default-no-lib
 build-graphical: forbid-winpthread check-submodules-graphical
 	CFLAGS_ADDEDINTERNAL="$(CFLAGS_ADDEDINTERNAL) -DHVM_USE_SDL" LDFLAGS_ADDEDINTERNAL="$(LDFLAGS_ADDEDINTERNAL) -Wl,-Bstatic -lhvmSDL -Wl,-Bdynamic" $(MAKE) build-default
-build-default: amalgamate-spew3d amalgamate-spew3dweb create-version-header $(ALL_OBJECTS)
+build-default: amalgamate-spew3d amalgamate-spew3dweb horp-build create-version-header $(ALL_OBJECTS)
 	mkdir -p output
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(BINEXT)" $(PROGRAM_OBJECTS) $(LDFLAGS)
 	$(CC) $(CFLAGS) $(CFLAGS_ADDEDINTERNAL) -shared -o ./output/"$(BINNAME)$(BINHEADLESSNAME)$(LIBEXT)" $(PROGRAM_OBJECTS_NO_MAIN) $(LDFLAGS) $(LDFLAGS_ADDEDINTERNAL)
@@ -113,6 +116,10 @@ create-version-header:
 
 %.o: %.c %.h
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
+
+horp-build:
+	@echo "Invoking horp to apply templates..."
+	$(HORP) template apply .
 
 forbid-winpthread:
 ifeq ($(PLATFORM),windows)

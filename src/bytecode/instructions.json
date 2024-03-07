@@ -29,9 +29,9 @@ license, see accompanied LICENSE.md.
     "items": [{
         "name": "ADD",
         "args": ["local", "local"],
-        "code": {"
+        "code": "
         assert(0 && \"Not implemented\");
-        "},
+        ",
     }],
 }
 
