@@ -29,6 +29,7 @@ license, see accompanied LICENSE.md.
 
 #include <string.h>
 
+#include "hasm/parse.h"
 #include "hvm_version.h"
 
 int hasm_main(int argc, const char **argv) {

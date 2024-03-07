@@ -25,4 +25,10 @@ Alternatively, at your option, this file is offered under the Apache 2
 license, see accompanied LICENSE.md.
 */
 
+#ifndef HVM_HASM_MAIN_H_
+#define HVM_HASM_MAIN_H_
+
 int hasm_main(int argc, const char **argv);
+
+#endif  // HVM_HASM_MAIN_H_
+

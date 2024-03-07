@@ -25,15 +25,10 @@ Alternatively, at your option, this file is offered under the Apache 2
 license, see accompanied LICENSE.md.
 */
 
-{
-    "instructions": [{
-        "name": "ADD",
-        "args": [{"type": "local", "name": "source 1"},
-            {"type": "local", "name": "source 2"},
-            {"type": "local", "name": "target"}],
-        "code": "
-        assert(0 && \"Not implemented\");
-        ",
-    }],
-}
+#ifndef HVM_HASM_PARSE_H_
+#define HVM_HASM_PARSE_H_
+
+int hasm_main(int argc, const char **argv);
+
+#endif  // HVM_HASM_PARSE_H_
 

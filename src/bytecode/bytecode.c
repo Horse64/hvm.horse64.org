@@ -25,15 +25,18 @@ Alternatively, at your option, this file is offered under the Apache 2
 license, see accompanied LICENSE.md.
 */
 
-{
-    "instructions": [{
-        "name": "ADD",
-        "args": [{"type": "local", "name": "source 1"},
-            {"type": "local", "name": "source 2"},
-            {"type": "local", "name": "target"}],
-        "code": "
-        assert(0 && \"Not implemented\");
-        ",
-    }],
+#include "compileconfig.h"
+
+#include <stdint.h>
+
+#include "bytecode/bytecode.h"
+
+h64program *h64program_New() {
+    h64program *prg = malloc(sizeof(h64program));
+    if (!prg) {
+        return NULL;
+    }
+    memset(prg, 0, sizeof(*prg));
+    return 0;
 }
 
