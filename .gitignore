@@ -10,3 +10,4 @@ HVM*.bin
 /src/bytecode/bytecode.h
 /src/hvm_version.h
 /horserun
+/horp
