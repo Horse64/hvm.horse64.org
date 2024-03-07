@@ -21,12 +21,13 @@ To build HVM without docker, go through the following steps:
    2. GCC including libc headers.
    3. X11 and/or Wayland headers for SDL2 if you're not
       just building the headless versions.
-   4. Horse64 SDK, specifically `horserun`. Make sure
-      `horserun` is available in your path or symlink
+   4. Horse64 SDK, specifically `horserun` and `horp`.
+      Make sure `horserun` is available in your path or symlink
       it into this repository's root via:
 
       ```bash
       ln -s /path/to/your/binary/of/horserun ./horserun
+      ln -s /path/to/your/binary/of/horp ./horp
       ```
    5. autotools and autoconf and libtool and cmake, for
       some of the dependencies.
@@ -88,7 +89,8 @@ The steps for that are as follows:
 
 4. Now do the HVM build as usual, but prefix any `make`
    commands with setting the environment variable `HORSERUN`
-   such that it points to the temporary Python-based version:
+   and `HORP` such that they point to the temporary
+   Python-based version:
 
    ```bash
    export HORSERUN="python3 /path/to/your/core.horse64.org/translator/horsec_run.py"
@@ -100,7 +102,9 @@ The steps for that are as follows:
    repo clone path,** obviously.)
 
    If you did something wrong, it should abort fairly early
-   by complaining it can't create `src/hvm_version.h`.
+   by complaining it can't create `src/hvm_version.h`, or errors
+   like `horserun: command not found` or
+   `horp: command not found`.
 
 
 Build a release version

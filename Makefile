@@ -21,12 +21,25 @@ ALL_OBJECTS:=$(patsubst %.c, %.o, $(wildcard ./src/*.c ./src/hasm/*.c)) vendor/m
 PROGRAM_OBJECTS:=$(filter-out $(UNITTEST_SOURCES),$(ALL_OBJECTS))
 PROGRAM_OBJECTS_NO_MAIN:=$(filter-out ./src/main.o,$(PROGRAM_OBJECTS))
 
+# Detect horserun tool:
 ifeq ($(HORSERUN),)
+ifneq ("$(wildcard ./horserun)","")
+HORSERUN:=./horserun
+else
 HORSERUN:=horserun
 endif
+endif
+
+# Detect horp tool:
 ifeq ($(HORP),)
+ifneq ("$(wildcard ./horp)","")
+HORP:=./horp
+else
 HORP:=horp
 endif
+endif
+
+# Detect various build-related variables:
 HVM_VERSION_CONTENTS:=$(shell PATH=`pwd`:$(PATH) $(HORSERUN) "tools/echo_hvm_version_h.h64")
 ifneq (,$(findstring lhvmSDL,$(LDFLAGS_ADDEDINTERNAL)))
 BINHEADLESSNAME:=
@@ -74,9 +87,15 @@ CFLAGS+= -I./output/built_deps/include/ -I./src/ -I./vendor/sha512crypt/ -I./ven
 .PHONY: build-all build-headless build-graphical build-hasm forbid-winpthread check-submodules check-submodules-graphical build-deps build-deps-graphical amalgamate-spew3d amalgamate-spew3dweb build-windows-x64 build-default built-default-no-lib build-sdl clean objectclean veryclean depsclean create-version-header
 
 build-all:
-	@echo "--- Compiler used: (start) ---"
+	@echo "--- C compiler used: (start) ---"
 	@$(CC) --version
-	@echo "--- Compiler used (end) ---"
+	@echo "--- C compiler used (end) ---"
+	@echo "--- HVM version to be built: (start) ---"
+	$(HORSERUN) "tools/echo_hvm_version_h.h64"
+	@echo "--- HVM vesion to be built (end) ---"
+	@echo "--- Horp used: (start) ---"
+	$(HORP) --version
+	@echo "--- Horp used (end) ---"
 	$(MAKE) clean
 	$(MAKE) objectclean build-headless
 	$(MAKE) objectclean build-graphical
@@ -118,7 +137,7 @@ create-version-header:
 	$(CC) $(CFLAGS) $(CFLAGS_OPTIMIZATION) -c -o $@ $<
 
 horp-build:
-	@echo "Invoking horp to apply templates..."
+	@echo "Invoking horp (HORP='$(HORP)') to apply templates..."
 	$(HORP) template apply .
 
 forbid-winpthread:
