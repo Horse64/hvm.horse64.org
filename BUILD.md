@@ -55,7 +55,7 @@ Bootstrapping HVM
 scratch without a prebuilt Horse64 already available.**
 You will need to do this if e.g. you're on a new,
 different Unix-like where no prebuilt Horse64 is available
-yet. Please not all Unix systems are supported by HVM,
+yet. Please note not all Unix systems are supported by HVM,
 but most should work. HVM expects a little endian CPU
 and 32-bit or 64-bit pointers and will break otherwise.)*
 
