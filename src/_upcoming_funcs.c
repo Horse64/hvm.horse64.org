@@ -299,6 +299,10 @@ up for use. */
  *  @h64func wildcard.match@core.horse64.org
  */
 
+/** @func debugger
+ *  @h64func debugger.get_addr@core.horse64.org
+ */
+
 /** @func net_serve_http
  *  @h64func net.serve.http@horse64.org
  */
