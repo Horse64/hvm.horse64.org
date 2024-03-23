@@ -299,8 +299,16 @@ up for use. */
  *  @h64func wildcard.match@core.horse64.org
  */
 
-/** @func debugger
+/** @func debugger_get_addr
  *  @h64func debugger.get_addr@core.horse64.org
+ */
+
+/** @func debugger_is_debug-build
+ *  @h64func debugger.is_debug_build@core.horse64.org
+ */
+
+/** @func textfmt_template_from_str
+ *  @h64func textfmt.template_from_str@core.horse64.org
  */
 
 /** @func net_serve_http
