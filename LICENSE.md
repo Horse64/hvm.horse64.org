@@ -15,8 +15,7 @@ Files outside of the `vendor` directory are, unless indicated
 otherwise, licensed under the following **BSD-2-Clause license**:
 
 ```
-Copyright (c) 2020-2024,  ellie/@ell1e & HVM Team (see AUTHORS.md).
-
+Copyright (c) 2020-2024, ellie/@ell1e & HVM authors (see AUTHORS.md).
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
