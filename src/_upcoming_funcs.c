@@ -198,8 +198,22 @@ up for use. */
  *  @h64var system.program_version@core.horse64.org
  */
 
-/** var system_self_exec_path
- *  @h64var system.self_exec_path@core.horse64.org
+/** @func system_self_exec_path
+ *  This function determines the filesystem path where thi
+ *  program's own executable is currently located.
+ *
+ *  **Note:** On systems like Linux where the executable
+ *  can be moved around at any point, it is **dangerous**
+ *  to open this path and expect it to work. The reason is that
+ *  between calling this function to obtain path, and then
+ *  actually opening the target with @{io.open} or similar,
+ *  the executable might have been renamed again. Therefore,
+ *  don't use this in security sensitive contexts.
+ *  (A common unproblematc use case is to simply be able to
+ *  tell the user what the executable file name is.)
+ *
+ *  @h64func system.self_exec_path@core.horse64.org
+ *  @is_later yes
  */
 
 /** @func terminal_get_line
