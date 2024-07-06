@@ -147,6 +147,11 @@ up for use. */
  *  @is_later no
  */
 
+/** @func path_make_abs
+ *  @h64func path.make_abs@core.horse64.org
+ *  @is_later no
+ */
+
 /** @func path_join
  *  @h64func path.join@core.horse64.org
  *  @is_later no
