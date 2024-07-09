@@ -321,8 +321,8 @@ up for use. */
  *  @is_later no
  */
 
-/** @func uri_get_path_part
- *  @h64func uri.get_path_part@core.horse64.org
+/** @func uri_get_path
+ *  @h64func uri.get_path@core.horse64.org
  *  @is_later no
  */
 
